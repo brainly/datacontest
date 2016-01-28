@@ -64,11 +64,11 @@ function startApp() {
         var usersList = document.querySelector('.js-loggedin-users');
         usersList.innerHTML = '';
 
-        console.log(usersRepo.users);
-
         Array.from(usersRepo.users).forEach(function (user) {
             var img = document.createElement('img');
             img.src = user.avatar;
+
+            //TODO fixme - move to CSS
             img.style.maxWidth = '30px';
             img.style.maxHeight = '30px';
 

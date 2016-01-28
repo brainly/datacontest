@@ -13,8 +13,6 @@ body {
   overflow: hidden; }
 
 .app-contest {
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
   position: relative;
   left: 0;
@@ -27,8 +25,6 @@ body {
   .app-contest__slide {
     padding: 30px;
     margin: 30px 0 0;
-    -webkit-flex-shrink: 0;
-    -ms-flex-negative: 0;
     flex-shrink: 0; }
 
 .js-user-avatar-hidden {
