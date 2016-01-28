@@ -14,11 +14,15 @@ const $avatarImage = $avatar.querySelector('.js-user-avatar-image');
 const $appElement = document.querySelector('.js-app');
 let windowWidth = window.innerWidth;
 
-$btn.addEventListener('click', () => {
-    user.authenticate()
-        .then(startApp)
-        .catch(showError);
-});
+if(user.isAuthenticated()) {
+    startApp();
+} else {
+    $btn.addEventListener('click', () => {
+        user.authenticate()
+            .then(startApp)
+            .catch(showError);
+    });
+}
 
 window.addEventListener('resize', setSlidesWidth);
 

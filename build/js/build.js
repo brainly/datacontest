@@ -29,9 +29,13 @@ var $avatarImage = $avatar.querySelector('.js-user-avatar-image');
 var $appElement = document.querySelector('.js-app');
 var windowWidth = window.innerWidth;
 
-$btn.addEventListener('click', function () {
-    user.authenticate().then(startApp).catch(showError);
-});
+if (user.isAuthenticated()) {
+    startApp();
+} else {
+    $btn.addEventListener('click', function () {
+        user.authenticate().then(startApp).catch(showError);
+    });
+}
 
 window.addEventListener('resize', setSlidesWidth);
 
@@ -222,19 +226,23 @@ var User = function () {
         _classCallCheck(this, User);
 
         this.firebase = firebase;
+
+        //check if logged in
+        var authData = this.firebase.getAuth();
+        if (authData) {
+            this._initUser(authData);
+        }
     }
 
     _createClass(User, [{
+        key: "isAuthenticated",
+        value: function isAuthenticated() {
+            return this.name && this.email;
+        }
+    }, {
         key: "authenticate",
         value: function authenticate() {
             var _this = this;
-
-            var authData = this.firebase.getAuth();
-
-            if (authData) {
-                this._initUser(authData);
-                return Promise.resolve();
-            }
 
             return new Promise(function (resolve, reject) {
 

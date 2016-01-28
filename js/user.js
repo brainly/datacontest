@@ -1,16 +1,19 @@
 class User {
     constructor(firebase) {
         this.firebase = firebase;
+
+        //check if logged in
+        let authData = (this.firebase).getAuth();
+        if (authData) {
+            this._initUser(authData);
+        }
+    }
+
+    isAuthenticated() {
+        return this.name && this.email;
     }
 
     authenticate() {
-        let authData = (this.firebase).getAuth();
-
-        if(authData) {
-            this._initUser(authData);
-            return Promise.resolve();
-        }
-
         return new Promise((resolve, reject) => {
 
             (this.firebase).authWithOAuthRedirect("google", (error, authData) => {
