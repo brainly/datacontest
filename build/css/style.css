@@ -24,12 +24,14 @@ body {
   .app-contest__header {
     margin-bottom: 48px; }
   .app-contest__content {
-    margin-bottom: 72px;
+    margin-bottom: 24px;
     text-align: center; }
   .app-contest__slide {
     -webkit-flex-shrink: 0;
     -ms-flex-negative: 0;
     flex-shrink: 0; }
+  .app-contest__action {
+    margin-top: 48px; }
   .app-contest__question {
     padding: 60px 30px 30px; }
   .app-contest__welcome {

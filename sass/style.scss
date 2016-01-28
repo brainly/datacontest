@@ -27,12 +27,16 @@ body {
   }
 
   &__content {
-    margin-bottom: 72px;
+    margin-bottom: 24px;
     text-align: center;
   }
 
   &__slide {
     flex-shrink: 0;
+  }
+
+  &__action {
+    margin-top: 48px;
   }
 
   &__question {
