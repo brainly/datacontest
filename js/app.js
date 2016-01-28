@@ -5,11 +5,12 @@ const ref = new Firebase("https://datacontest.firebaseio.com");
 const user = new User(ref);
 let questionRepo = null;
 
-const $btn = document.getElementById('js-log-in');
-const $name = document.getElementById('js-user-name');
-const $avatar = document.getElementById('js-user-avatar');
-const $email = document.getElementById('js-user-email');
-const $questions = document.getElementById('js-questions');
+const $btn = document.querySelector('.js-log-in');
+const $name = document.querySelector('.js-user-name');
+const $avatar = document.querySelector('.js-user-avatar');
+
+const $appElement = document.querySelector('.js-app');
+let windowWidth = window.innerWidth;
 
 $btn.addEventListener('click', () => {
     user.authenticate()
@@ -17,39 +18,27 @@ $btn.addEventListener('click', () => {
         .catch(showError);
 });
 
+window.addEventListener('resize', setSlidesWidth);
+
 function startApp() {
     $name.innerHTML = user.name;
-    $email.innerHTML = user.email;
     $avatar.src = user.avatar;
 
     questionRepo = new QuestionRepository(ref);
-
     questionRepo.onReady(initQuestions);
     questionRepo.onQuestionChange(questionChanged);
     questionRepo.onError(showError);
+    $btn.style.display = 'none';
 }
 
 function initQuestions(questions) {
-    questions.forEach(question => {
-        let li = document.createElement('li');
-        li.innerHTML = question.text;
-
-        $questions.appendChild(li);
-    });
+    questions.forEach(renderQuestion);
+    setSlidesWidth();
 }
 
 function questionChanged(questionIdx) {
     console.log('qchange', questionIdx);
-
-    if (questionIdx === -1) {
-        return;
-    }
-
-    if (questionIdx - 1 >= 0) {
-        $questions.childNodes[questionIdx - 1].style.fontWeight = 'normal';
-    }
-
-    $questions.childNodes[questionIdx].style.fontWeight = 'bold';
+    changeSlide(questionIdx + 1);
 }
 
 function showError(error) {
@@ -62,3 +51,48 @@ function showError(error) {
     console.error('error', error);
     alert(message);
 }
+
+
+function renderAnswer(answer) {
+    let $answerTemplate = document.importNode(document.querySelector('#answer-template'), true);
+    let $answerContent = $answerTemplate.content.querySelector('.js-answer-content');
+    let $answerClone;
+
+    $answerContent.textContent = answer;
+    $answerClone = document.importNode($answerTemplate.content, true);
+
+    return $answerClone;
+}
+
+function renderQuestion(question) {
+    let $questionTemplate = document.importNode(document.querySelector('#question-template'), true);
+    let $questionContent = $questionTemplate.content.querySelector('.js-question-content');
+    let $answersList = $questionTemplate.content.querySelector('.js-answers-list');
+    let $questionClone;
+
+    question.answers.forEach((answer) => {
+        $answersList.appendChild(renderAnswer(answer));
+    });
+
+    $questionContent.textContent = question.text;
+    $questionClone = document.importNode($questionTemplate.content, true);
+    $appElement.appendChild($questionClone);
+
+}
+
+function setSlidesWidth() {
+    windowWidth = window.innerWidth;
+    const $slides = Array.from(document.querySelectorAll('.js-slide'));
+
+    $slides.forEach(function($slide) {
+        $slide.style.width = windowWidth + 'px';
+    });
+}
+
+function changeSlide(slideIndex) {
+    $appElement.style.left = - (slideIndex * windowWidth) + 'px';
+}
+
+setSlidesWidth();
+
+window.changeSlide = changeSlide;
