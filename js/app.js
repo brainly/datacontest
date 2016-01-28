@@ -1,5 +1,6 @@
 import User from './user.js';
 import QuestionRepository from './question-repository.js';
+import VotesRepository from './votes-repository.js';
 
 const ref = new Firebase("https://datacontest.firebaseio.com");
 const user = new User(ref);
