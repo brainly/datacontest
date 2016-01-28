@@ -20,6 +20,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var ref = new Firebase("https://datacontest.firebaseio.com");
 var user = new _user2.default(ref);
 var questionRepo = null;
+var votesRepo = null;
 
 var $btn = document.querySelector('.js-log-in');
 var $name = document.querySelector('.js-user-name');
@@ -46,6 +47,10 @@ function startApp() {
     questionRepo.onReady(initQuestions);
     questionRepo.onQuestionChange(questionChanged);
     questionRepo.onError(showError);
+
+    votesRepo = new _votesRepository2.default(ref, user.id);
+
+    window.votesRepo = votesRepo;
     $btn.style.display = 'none';
 }
 
@@ -239,6 +244,7 @@ var User = function () {
         value: function _initUser(authData) {
             //TODO add "@brainly.com" check
 
+            this.id = authData.uid;
             this.name = authData.google.displayName;
             this.avatar = authData.google.profileImageURL;
             this.email = authData.google.email;
@@ -262,17 +268,28 @@ Object.defineProperty(exports, "__esModule", {
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var VoteRepository = function () {
-    function VoteRepository(firebase) {
+    function VoteRepository(firebase, userId) {
         _classCallCheck(this, VoteRepository);
 
+        this.userId = userId;
         this.firebase = firebase;
         this._listeners = {
             'votes-change': [],
             'error': []
         };
+
+        //(this.firebase).child('votes/').on('child_added', (data) => {
+        //    console.log('child_added', data);
+        //});
     }
 
     _createClass(VoteRepository, [{
+        key: 'vote',
+        value: function vote(questionId, answerId) {
+            var votesRef = this.firebase.child('votes/' + questionId + '/' + this.userId);
+            votesRef.set(answerId);
+        }
+    }, {
         key: '_trigger',
         value: function _trigger(action, data) {
             this._listeners[action].forEach(function (callback) {

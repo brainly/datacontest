@@ -5,6 +5,7 @@ import VotesRepository from './votes-repository.js';
 const ref = new Firebase("https://datacontest.firebaseio.com");
 const user = new User(ref);
 let questionRepo = null;
+let votesRepo = null;
 
 const $btn = document.querySelector('.js-log-in');
 const $name = document.querySelector('.js-user-name');
@@ -33,6 +34,10 @@ function startApp() {
     questionRepo.onReady(initQuestions);
     questionRepo.onQuestionChange(questionChanged);
     questionRepo.onError(showError);
+
+    votesRepo = new VotesRepository(ref, user.id);
+
+    window.votesRepo = votesRepo;
     $btn.style.display = 'none';
 }
 
