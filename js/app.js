@@ -49,14 +49,14 @@ function startApp() {
         usersList.innerHTML = '';
 
         Array.from(usersRepo.users).forEach(user => {
-            let img = document.createElement('img');
-            img.src = user.avatar;
 
-            //TODO fixme - move to CSS
-            img.style.maxWidth = '30px';
-            img.style.maxHeight = '30px';
+            let $avatarTemplate = document.importNode(document.querySelector('#avatar-template'), true);
+            let $avatarImage = $avatarTemplate.content.querySelector('.js-avatar-image');
+            let $avatarClone;
 
-            usersList.appendChild(img);
+            $avatarImage.setAttribute('src', user.avatar);
+            $avatarClone = document.importNode($avatarTemplate.content, true);
+            usersList.appendChild($avatarClone);
         })
     });
 
@@ -79,7 +79,7 @@ function changeBackground(questionIdx) {
         '#6ed6a0',
         '#5bb8ff',
         '#ff8073',
-        '#ffbe32',
+        '#ffbe32'
     ];
 
     const rand = Math.floor(Math.random() * colors.length);

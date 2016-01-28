@@ -65,14 +65,14 @@ function startApp() {
         usersList.innerHTML = '';
 
         Array.from(usersRepo.users).forEach(function (user) {
-            var img = document.createElement('img');
-            img.src = user.avatar;
 
-            //TODO fixme - move to CSS
-            img.style.maxWidth = '30px';
-            img.style.maxHeight = '30px';
+            var $avatarTemplate = document.importNode(document.querySelector('#avatar-template'), true);
+            var $avatarImage = $avatarTemplate.content.querySelector('.js-avatar-image');
+            var $avatarClone = undefined;
 
-            usersList.appendChild(img);
+            $avatarImage.setAttribute('src', user.avatar);
+            $avatarClone = document.importNode($avatarTemplate.content, true);
+            usersList.appendChild($avatarClone);
         });
     });
 
@@ -97,6 +97,8 @@ function changeBackground(questionIdx) {
 
     if (questionIdx != 0) {
         document.body.style.backgroundColor = colors[rand];
+    } else {
+        document.body.style.backgroundColor = '';
     }
 }
 
