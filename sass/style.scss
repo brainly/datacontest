@@ -1,0 +1,20 @@
+$karolina: 10px;
+
+body {
+  padding: $karolina;
+  margin: 50px;
+}
+
+
+.app-contest {
+
+  &__header {
+    margin-bottom: 48px;
+  }
+
+  &__content {
+    margin-bottom: 72px;
+    text-align: center;
+  }
+
+}
