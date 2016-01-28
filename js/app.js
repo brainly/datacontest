@@ -8,6 +8,7 @@ let questionRepo = null;
 const $btn = document.querySelector('.js-log-in');
 const $name = document.querySelector('.js-user-name');
 const $avatar = document.querySelector('.js-user-avatar');
+const $avatarImage = $avatar.querySelector('.js-user-avatar-image');
 
 const $appElement = document.querySelector('.js-app');
 let windowWidth = window.innerWidth;
@@ -22,7 +23,8 @@ window.addEventListener('resize', setSlidesWidth);
 
 function startApp() {
     $name.innerHTML = user.name;
-    $avatar.src = user.avatar;
+    $avatar.classList.remove('js-user-avatar-hidden');
+    $avatarImage.src = user.avatar;
 
     questionRepo = new QuestionRepository(ref);
     questionRepo.onReady(initQuestions);
@@ -53,30 +55,45 @@ function showError(error) {
 }
 
 
-function renderAnswer(answer) {
+function renderAnswer(answer, answerId, questionId) {
     let $answerTemplate = document.importNode(document.querySelector('#answer-template'), true);
+    let $answerButton =  $answerTemplate.content.querySelector('.js-answer-radio-button');
     let $answerContent = $answerTemplate.content.querySelector('.js-answer-content');
-    let $answerClone;
+    let $answer;
 
     $answerContent.textContent = answer;
-    $answerClone = document.importNode($answerTemplate.content, true);
+    $answerButton.dataset.answerId = answerId;
+    $answerButton.dataset.questionId = questionId;
 
-    return $answerClone;
+    $answer = document.importNode($answerTemplate.content, true);
+
+    return $answer;
 }
 
-function renderQuestion(question) {
+function renderQuestion(question, questionId) {
     let $questionTemplate = document.importNode(document.querySelector('#question-template'), true);
     let $questionContent = $questionTemplate.content.querySelector('.js-question-content');
     let $answersList = $questionTemplate.content.querySelector('.js-answers-list');
-    let $questionClone;
+    let $question;
+    let $answerRadioButtons;
 
-    question.answers.forEach((answer) => {
-        $answersList.appendChild(renderAnswer(answer));
+    question.answers.forEach((answer, index) => {
+        $answersList.appendChild(renderAnswer(answer, index + 1, questionId));
     });
 
+    $answerRadioButtons = Array.from($answersList.querySelectorAll('.js-answer-radio-button'));
+
+
+    $answerRadioButtons.foreach(($radioButton) => {
+        $radioButton.addEventListener('change', function() {
+            console.log('klikłem');
+        });
+    });
+
+
     $questionContent.textContent = question.text;
-    $questionClone = document.importNode($questionTemplate.content, true);
-    $appElement.appendChild($questionClone);
+    $question = document.importNode($questionTemplate.content, true);
+    $appElement.appendChild($question);
 
 }
 

@@ -20,6 +20,7 @@ var questionRepo = null;
 var $btn = document.querySelector('.js-log-in');
 var $name = document.querySelector('.js-user-name');
 var $avatar = document.querySelector('.js-user-avatar');
+var $avatarImage = $avatar.querySelector('.js-user-avatar-image');
 
 var $appElement = document.querySelector('.js-app');
 var windowWidth = window.innerWidth;
@@ -30,13 +31,10 @@ $btn.addEventListener('click', function () {
 
 window.addEventListener('resize', setSlidesWidth);
 
-function nodeListToArray(nodes) {
-    return Array.prototype.slice.call(nodes);
-}
-
 function startApp() {
     $name.innerHTML = user.name;
-    $avatar.src = user.avatar;
+    $avatar.classList.remove('js-user-avatar-hidden');
+    $avatarImage.src = user.avatar;
 
     questionRepo = new _questionRepository2.default(ref);
     questionRepo.onReady(initQuestions);
@@ -66,35 +64,48 @@ function showError(error) {
     alert(message);
 }
 
-function renderAnswer(answer) {
+function renderAnswer(answer, answerId, questionId) {
     var $answerTemplate = document.importNode(document.querySelector('#answer-template'), true);
+    var $answerButton = $answerTemplate.content.querySelector('.js-answer-radio-button');
     var $answerContent = $answerTemplate.content.querySelector('.js-answer-content');
-    var $answerClone = undefined;
+    var $answer = undefined;
 
     $answerContent.textContent = answer;
-    $answerClone = document.importNode($answerTemplate.content, true);
+    $answerButton.dataset.answerId = answerId;
+    $answerButton.dataset.questionId = questionId;
 
-    return $answerClone;
+    $answer = document.importNode($answerTemplate.content, true);
+
+    return $answer;
 }
 
-function renderQuestion(question) {
+function renderQuestion(question, questionId) {
     var $questionTemplate = document.importNode(document.querySelector('#question-template'), true);
     var $questionContent = $questionTemplate.content.querySelector('.js-question-content');
     var $answersList = $questionTemplate.content.querySelector('.js-answers-list');
-    var $questionClone = undefined;
+    var $question = undefined;
+    var $answerRadioButtons = undefined;
 
-    question.answers.forEach(function (answer) {
-        $answersList.appendChild(renderAnswer(answer));
+    question.answers.forEach(function (answer, index) {
+        $answersList.appendChild(renderAnswer(answer, index + 1, questionId));
+    });
+
+    $answerRadioButtons = Array.from($answersList.querySelectorAll('.js-answer-radio-button'));
+
+    $answerRadioButtons.foreach(function ($radioButton) {
+        $radioButton.addEventListener('change', function () {
+            console.log('klikłem');
+        });
     });
 
     $questionContent.textContent = question.text;
-    $questionClone = document.importNode($questionTemplate.content, true);
-    $appElement.appendChild($questionClone);
+    $question = document.importNode($questionTemplate.content, true);
+    $appElement.appendChild($question);
 }
 
 function setSlidesWidth() {
     windowWidth = window.innerWidth;
-    var $slides = nodeListToArray(document.querySelectorAll('.js-slide'));
+    var $slides = Array.from(document.querySelectorAll('.js-slide'));
 
     $slides.forEach(function ($slide) {
         $slide.style.width = windowWidth + 'px';
