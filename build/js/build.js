@@ -106,12 +106,12 @@ var QuestionRepository = function () {
         questionsRef.once("value", function (snapshot) {
             _this.questions = snapshot.val();
             _this._trigger('ready', _this.questions);
-        }, this._trigger.bind('error'));
+        }, this._trigger.bind(this, 'error'));
 
         currentQuestionRef.on("value", function (snapshot) {
             _this.currentQuestion = snapshot.val();
             _this._trigger('question-change', _this.currentQuestion);
-        }, this._trigger.bind('error'));
+        }, this._trigger.bind(this, 'error'));
     }
 
     _createClass(QuestionRepository, [{

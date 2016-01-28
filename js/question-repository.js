@@ -16,12 +16,12 @@ class QuestionRepository {
         questionsRef.once("value", (snapshot) => {
             this.questions = snapshot.val();
             this._trigger('ready', this.questions);
-        }, this._trigger.bind('error'));
+        }, this._trigger.bind(this, 'error'));
 
         currentQuestionRef.on("value", (snapshot) => {
             this.currentQuestion = snapshot.val();
             this._trigger('question-change', this.currentQuestion);
-        }, this._trigger.bind('error'));
+        }, this._trigger.bind(this, 'error'));
     }
 
     _trigger(action, data) {
