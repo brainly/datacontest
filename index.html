@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="utf-8">
         <title>Title of the document</title>
         <link rel="stylesheet" href="http://styleguide.brainly.com/22.1.0/style-guide.css">
         <link rel="stylesheet" href="./build/css/style.css">
@@ -9,63 +10,61 @@
 
     <body>
 
-        <div class="app-contest">
-            <div class="app-contest__header">
-                <h1 class="mint-text-bit">
+        <div class="app-contest js-app">
+
+            <div class="app-contest__slide js-slide">
+                <div class="app-contest__header">
+                    <h1 class="mint-text-bit">
                     <span class="mint-text-bit__hole">
                         <div class="mint-logo mint-logo--small">
                             <img class="mint-logo__image" src="http://styleguide.brainly.com/images/logos/brainly-761d75d6ea.svg">
                         </div>
                     </span>
-                    Data contest
-                </h1>
-            </div>
+                        Data contest
+                    </h1>
+                </div>
 
-            <div class="app-contest__content">
-                <h2 class="mint-header-primary mint-header-primary--small">
-                    Starting soon
-                </h2>
-            </div>
+                <div class="app-contest__content">
+                    <h2 class="mint-header-primary mint-header-primary--small">
+                        Starting soon
+                    </h2>
+                </div>
 
-            <div class="app-contest__action">
-                <a class="mint-button-primary mint-button-primary--full">
-                    <div class="mint-button-primary__hole">
-                        Log in
-                    </div>
-                </a>
-            </div>
-
-        </div>
-
-
-        <div class="app-contest">
-
-            <div class="mint-logo">
-                <img class="mint-logo__image" src="http://styleguide.brainly.com/images/logos/brainly-761d75d6ea.svg">
-            </div>
-
-            <h1 class="mint-header-secondary">
-                Question content question content question content?
-            </h1>
-
-            <div>
-                <ol class="app-contest__answer-list">
-                    <li>
-                        first
-                    </li>
-                    <li>
-                        second
-                    </li>
-                    <li>
-                        third
-                    </li>
-                    <li>
-                        fourth
-                    </li>
-                </ol>
+                <div class="app-contest__action">
+                    <a class="mint-button-primary mint-button-primary--full">
+                        <div class="mint-button-primary__hole">
+                            Log in
+                        </div>
+                    </a>
+                </div>
             </div>
 
         </div>
+
+        <!-- TEMPLATES -->
+
+        <template id="question-template">
+            <div class="app-contest__slide js-slide">
+
+                <div class="mint-logo">
+                    <img class="mint-logo__image" src="http://styleguide.brainly.com/images/logos/brainly-761d75d6ea.svg">
+                </div>
+
+                <h1 class="mint-header-secondary js-question-content"></h1>
+
+                <div>
+                    <ol class="app-contest__answer-list js-answers-list">
+                    </ol>
+                </div>
+
+            </div>
+        </template>
+
+        <template id="answer-template">
+            <li class="answer js-answer-content"></li>
+        </template>
+
+        <script type="text/javascript" src="./build/js/main.js"></script>
 
     </body>
 
