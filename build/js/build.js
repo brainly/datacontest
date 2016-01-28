@@ -1,10 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-require('./firebase.js');
-
-},{"./firebase.js":2}],2:[function(require,module,exports){
-'use strict';
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 var _user = require('./user.js');
 
@@ -27,40 +24,56 @@ var $email = document.getElementById('js-user-email');
 var $questions = document.getElementById('js-questions');
 
 $btn.addEventListener('click', function () {
-    user.authenticate().then(function () {
-        $name.innerHTML = user.name;
-        $email.innerHTML = user.email;
-        $avatar.src = user.avatar;
-
-        questionRepo = new _questionRepository2.default(ref);
-
-        questionRepo.onReady(function (questions) {
-            questions.forEach(function (question, idx) {
-                var li = document.createElement('li');
-                li.innerHTML = question.text;
-
-                $questions.appendChild(li);
-            });
-        });
-
-        questionRepo.onQuestionChange(function (questionIdx) {
-            console.log('qchange', questionIdx);
-            if (questionIdx === -1) {
-                return;
-            }
-
-            if (questionIdx - 1 >= 0) {
-                $questions.childNodes[questionIdx - 1].style.fontWeight = 'normal';
-            }
-
-            $questions.childNodes[questionIdx].style.fontWeight = 'bold';
-        });
-    }).catch(function (error) {
-        alert(error);
-    });
+    user.authenticate().then(startApp).catch(showError);
 });
 
-},{"./question-repository.js":3,"./user.js":4}],3:[function(require,module,exports){
+function startApp() {
+    $name.innerHTML = user.name;
+    $email.innerHTML = user.email;
+    $avatar.src = user.avatar;
+
+    questionRepo = new _questionRepository2.default(ref);
+
+    questionRepo.onReady(initQuestions);
+    questionRepo.onQuestionChange(questionChanged);
+    questionRepo.onError(showError);
+}
+
+function initQuestions(questions) {
+    questions.forEach(function (question) {
+        var li = document.createElement('li');
+        li.innerHTML = question.text;
+
+        $questions.appendChild(li);
+    });
+}
+
+function questionChanged(questionIdx) {
+    console.log('qchange', questionIdx);
+
+    if (questionIdx === -1) {
+        return;
+    }
+
+    if (questionIdx - 1 >= 0) {
+        $questions.childNodes[questionIdx - 1].style.fontWeight = 'normal';
+    }
+
+    $questions.childNodes[questionIdx].style.fontWeight = 'bold';
+}
+
+function showError(error) {
+    var message = error;
+
+    if ((typeof message === 'undefined' ? 'undefined' : _typeof(message)) === 'object') {
+        message = message.code;
+    }
+
+    console.error('error', error);
+    alert(message);
+}
+
+},{"./question-repository.js":2,"./user.js":3}],2:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -130,7 +143,7 @@ var QuestionRepository = function () {
 
 exports.default = QuestionRepository;
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
