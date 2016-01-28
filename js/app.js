@@ -69,7 +69,6 @@ function initQuestions(questions) {
 
     questions.forEach((question, idx) => {
         votesRepo.onVotesChange(idx, votes => {
-            console.log(idx, votes);
             clearAvatars(idx);
 
             for(let uid in votes) {
