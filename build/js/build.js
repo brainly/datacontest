@@ -125,14 +125,14 @@ function addAvatar(_ref) {
     var $answer = $input.parentNode.parentNode.parentNode;
     var $answerers = $answer.querySelector('.js-answerers');
 
-    var $avatar = document.createElement('img');
-    $avatar.src = user.avatar;
+    var $avatarTemplate = document.importNode(document.querySelector('#avatar-template'), true);
+    var $avatarImage = $avatarTemplate.content.querySelector('.js-avatar-image');
+    var $avatarClone = undefined;
 
-    //TODO fixme
-    $avatar.style.maxHeight = '20px';
-    $avatar.style.maxWidth = '20px';
+    $avatarImage.setAttribute('src', user.avatar);
+    $avatarClone = document.importNode($avatarTemplate.content, true);
 
-    $answerers.appendChild($avatar);
+    $answerers.appendChild($avatarClone);
 }
 
 function questionChanged(questionIdx) {

@@ -105,14 +105,14 @@ function addAvatar({questionId, user, vote}) {
     let $answer = $input.parentNode.parentNode.parentNode;
     let $answerers = $answer.querySelector('.js-answerers');
 
-    let $avatar = document.createElement('img');
-    $avatar.src = user.avatar;
+    let $avatarTemplate = document.importNode(document.querySelector('#avatar-template'), true);
+    let $avatarImage = $avatarTemplate.content.querySelector('.js-avatar-image');
+    let $avatarClone;
 
-    //TODO fixme
-    $avatar.style.maxHeight = '20px';
-    $avatar.style.maxWidth = '20px';
+    $avatarImage.setAttribute('src', user.avatar);
+    $avatarClone = document.importNode($avatarTemplate.content, true);
 
-    $answerers.appendChild($avatar);
+    $answerers.appendChild($avatarClone);
 }
 
 function questionChanged(questionIdx) {
