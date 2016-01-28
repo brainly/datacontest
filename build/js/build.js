@@ -11,6 +11,10 @@ var _questionRepository = require('./question-repository.js');
 
 var _questionRepository2 = _interopRequireDefault(_questionRepository);
 
+var _votesRepository = require('./votes-repository.js');
+
+var _votesRepository2 = _interopRequireDefault(_votesRepository);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ref = new Firebase("https://datacontest.firebaseio.com");
@@ -109,7 +113,7 @@ setSlidesWidth();
 
 window.changeSlide = changeSlide;
 
-},{"./question-repository.js":2,"./user.js":3}],2:[function(require,module,exports){
+},{"./question-repository.js":2,"./user.js":3,"./votes-repository.js":4}],2:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -195,10 +199,6 @@ var User = function () {
         _classCallCheck(this, User);
 
         this.firebase = firebase;
-
-        this.name = null;
-        this.avatar = null;
-        this.email = null;
     }
 
     _createClass(User, [{
@@ -206,18 +206,22 @@ var User = function () {
         value: function authenticate() {
             var _this = this;
 
+            var authData = this.firebase.getAuth();
+
+            if (authData) {
+                this._initUser(authData);
+                return Promise.resolve();
+            }
+
             return new Promise(function (resolve, reject) {
-                _this.firebase.authWithOAuthPopup("google", function (error, authData) {
+
+                _this.firebase.authWithOAuthRedirect("google", function (error, authData) {
                     if (error) {
                         reject(error);
                         return;
                     }
 
-                    //TODO add "@brainly.com" check
-
-                    _this.name = authData.google.displayName;
-                    _this.avatar = authData.google.profileImageURL;
-                    _this.email = authData.google.email;
+                    _this._initUser(authData);
 
                     resolve();
                 }, {
@@ -226,12 +230,67 @@ var User = function () {
                 });
             });
         }
+    }, {
+        key: "_initUser",
+        value: function _initUser(authData) {
+            //TODO add "@brainly.com" check
+
+            this.name = authData.google.displayName;
+            this.avatar = authData.google.profileImageURL;
+            this.email = authData.google.email;
+        }
     }]);
 
     return User;
 }();
 
 exports.default = User;
+
+},{}],4:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var VoteRepository = function () {
+    function VoteRepository(firebase) {
+        _classCallCheck(this, VoteRepository);
+
+        this.firebase = firebase;
+        this._listeners = {
+            'votes-change': [],
+            'error': []
+        };
+    }
+
+    _createClass(VoteRepository, [{
+        key: '_trigger',
+        value: function _trigger(action, data) {
+            this._listeners[action].forEach(function (callback) {
+                callback(data);
+            });
+        }
+    }, {
+        key: 'onError',
+        value: function onError(listener) {
+            this._listeners['error'].push(listener);
+        }
+    }, {
+        key: 'onVotesChange',
+        value: function onVotesChange(listener) {
+            this._listeners['votes-change'].push(listener);
+        }
+    }]);
+
+    return VoteRepository;
+}();
+
+exports.default = VoteRepository;
 
 },{}]},{},[1])
 
