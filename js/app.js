@@ -74,6 +74,21 @@ function questionChanged(questionIdx) {
     changeSlide(questionIdx + 1);
 }
 
+function changeBackground(questionIdx) {
+    const colors = [
+        '#6ed6a0',
+        '#5bb8ff',
+        '#ff8073',
+        '#ffbe32',
+    ];
+
+    const rand = Math.floor(Math.random() * colors.length);
+
+    if (questionIdx != 0) {
+        document.body.style.backgroundColor = colors[rand];
+    }
+}
+
 function showError(error) {
     let message = error;
 
@@ -152,6 +167,7 @@ function setSlidesWidth() {
 
 function changeSlide(slideIndex) {
     $appElement.style.left = - (slideIndex * windowWidth) + 'px';
+    changeBackground(slideIndex);
 }
 
 setSlidesWidth();

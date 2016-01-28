@@ -10,9 +10,12 @@ body {
   right: 0;
   top: 0;
   position: absolute;
-  overflow: hidden; }
+  overflow: hidden;
+  transition: background-color 0.5s; }
 
 .app-contest {
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
   position: relative;
   left: 0;
@@ -23,9 +26,26 @@ body {
     margin-bottom: 72px;
     text-align: center; }
   .app-contest__slide {
-    padding: 30px;
-    margin: 30px 0 0;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
     flex-shrink: 0; }
+  .app-contest__question {
+    padding: 60px 30px 30px; }
+  .app-contest__welcome {
+    padding: 60px 30px 30px; }
+  .app-contest .mint-label__text {
+    color: #ffffff; }
+  .app-contest .mint-label__icon {
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    -ms-grid-row-align: center;
+    align-items: center; }
+  .app-contest .mint-label {
+    margin-bottom: 12px; }
+  .app-contest .mint-header-secondary {
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    margin-bottom: 24px; }
 
 .js-user-avatar-hidden {
   display: none !important; }

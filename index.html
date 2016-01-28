@@ -13,42 +13,49 @@
         <div class="app-contest js-app">
 
             <div class="app-contest__slide js-slide">
-                <div class="app-contest__header">
-                    <h1 class="mint-text-bit">
+
+                <div class="app-contest__welcome">
+
+                    <div class="app-contest__header">
+                        <h1 class="mint-text-bit">
                     <span class="mint-text-bit__hole">
                         <div class="mint-logo mint-logo--small">
                             <img class="mint-logo__image" src="http://styleguide.brainly.com/images/logos/brainly-761d75d6ea.svg">
                         </div>
                     </span>
-                        Data contest
-                    </h1>
-                </div>
+                            Data contest
+                        </h1>
+                    </div>
 
-                <div class="app-contest__content">
-                    <h2 class="mint-header-primary mint-header-primary--small">
-                        starting soon...
-                    </h2>
+                    <div class="app-contest__content">
+                        <h2 class="mint-header-primary mint-header-primary--small">
+                            starting soon...
+                        </h2>
 
-                    <div>
-                        <p class="mint-text mint-text--emphasised js-user-name"></p>
+                        <div>
+                            <p class="mint-text mint-text--emphasised js-user-name"></p>
 
-                        <div class="mint-avatar mint-avatar--xlarge js-user-avatar js-user-avatar-hidden">
-                            <img class="mint-avatar__image js-user-avatar-image">
+                            <div class="mint-avatar mint-avatar--xlarge js-user-avatar js-user-avatar-hidden">
+                                <img class="mint-avatar__image js-user-avatar-image">
+                            </div>
+
                         </div>
 
                     </div>
 
+                    <div class="app-contest__action js-log-in">
+                        <a class="mint-button-primary mint-button-primary--full">
+                            <div class="mint-button-primary__hole">
+                                Log in
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="js-loggedin-users"></div>
+
                 </div>
 
-                <div class="app-contest__action js-log-in">
-                    <a class="mint-button-primary mint-button-primary--full">
-                        <div class="mint-button-primary__hole">
-                            Log in
-                        </div>
-                    </a>
-                </div>
 
-                <div class="js-loggedin-users"></div>
             </div>
 
         </div>
@@ -56,23 +63,19 @@
         <!-- TEMPLATES -->
         <template id="question-template">
             <div class="app-contest__slide js-slide">
+                <div class="app-contest__question">
+                    <div class="js-question">
+                        <h1 class="mint-header-secondary mint-header-secondary--light js-question-content"></h1>
 
-                <div class="mint-logo">
-                    <img class="mint-logo__image" src="http://styleguide.brainly.com/images/logos/brainly-761d75d6ea.svg">
+                        <div class="js-answers-list"></div>
+                    </div>
                 </div>
-
-                <div class="js-question">
-                    <h1 class="mint-header-secondary js-question-content"></h1>
-
-                    <div class="js-answers-list"></div>
-                </div>
-
             </div>
         </template>
 
         <template id="answer-template">
             <div class="answer">
-                <div class="mint-label mint-label--emphasised mint-label--secondary mint-label--lite">
+                <div class="mint-label mint-label--large mint-label--emphasised mint-label--secondary mint-label--lite">
                     <div class="mint-label__icon">
                         <div class="mint-radio">
                             <input class="mint-radio__element js-answer-radio-button" name="answer" type="radio">
