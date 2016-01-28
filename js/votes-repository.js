@@ -1,10 +1,20 @@
 class VoteRepository {
-    constructor(firebase) {
+    constructor(firebase, userId) {
+        this.userId = userId;
         this.firebase = firebase;
         this._listeners = {
             'votes-change': [],
             'error': []
         };
+
+        //(this.firebase).child('votes/').on('child_added', (data) => {
+        //    console.log('child_added', data);
+        //});
+    }
+
+    vote(questionId, answerId) {
+        let votesRef = (this.firebase).child(`votes/${questionId}/${this.userId}`);
+        votesRef.set(answerId);
     }
 
     _trigger(action, data) {

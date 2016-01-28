@@ -35,6 +35,7 @@ class User {
     _initUser(authData) {
         //TODO add "@brainly.com" check
 
+        this.id = authData.uid;
         this.name = authData.google.displayName;
         this.avatar = authData.google.profileImageURL;
         this.email = authData.google.email;
