@@ -28,15 +28,15 @@ var $avatar = document.querySelector('.js-user-avatar');
 var $appElement = document.querySelector('.js-app');
 var windowWidth = window.innerWidth;
 
-$btn.addEventListener('click', function () {
-    user.authenticate().then(startApp).catch(showError);
-});
+if (user.isAuthenticated()) {
+    startApp();
+} else {
+    $btn.addEventListener('click', function () {
+        user.authenticate().then(startApp).catch(showError);
+    });
+}
 
 window.addEventListener('resize', setSlidesWidth);
-
-function nodeListToArray(nodes) {
-    return Array.prototype.slice.call(nodes);
-}
 
 function startApp() {
     $name.innerHTML = user.name;
@@ -98,7 +98,7 @@ function renderQuestion(question) {
 
 function setSlidesWidth() {
     windowWidth = window.innerWidth;
-    var $slides = nodeListToArray(document.querySelectorAll('.js-slide'));
+    var $slides = Array.from(document.querySelectorAll('.js-slide'));
 
     $slides.forEach(function ($slide) {
         $slide.style.width = windowWidth + 'px';
@@ -199,19 +199,23 @@ var User = function () {
         _classCallCheck(this, User);
 
         this.firebase = firebase;
+
+        //check if logged in
+        var authData = this.firebase.getAuth();
+        if (authData) {
+            this._initUser(authData);
+        }
     }
 
     _createClass(User, [{
+        key: "isAuthenticated",
+        value: function isAuthenticated() {
+            return this.name && this.email;
+        }
+    }, {
         key: "authenticate",
         value: function authenticate() {
             var _this = this;
-
-            var authData = this.firebase.getAuth();
-
-            if (authData) {
-                this._initUser(authData);
-                return Promise.resolve();
-            }
 
             return new Promise(function (resolve, reject) {
 
