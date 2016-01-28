@@ -167,7 +167,6 @@ function initBindings($question) {
 function setSlidesWidth() {
     windowWidth = window.innerWidth;
     var $slides = Array.from(document.querySelectorAll('.js-slide'));
-
     $slides.forEach(function ($slide) {
         $slide.style.width = windowWidth + 'px';
     });
