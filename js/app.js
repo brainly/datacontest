@@ -20,6 +20,10 @@ $btn.addEventListener('click', () => {
 
 window.addEventListener('resize', setSlidesWidth);
 
+function nodeListToArray(nodes) {
+    return Array.prototype.slice.call(nodes);
+}
+
 function startApp() {
     $name.innerHTML = user.name;
     $avatar.src = user.avatar;
@@ -52,7 +56,6 @@ function showError(error) {
     alert(message);
 }
 
-
 function renderAnswer(answer) {
     let $answerTemplate = document.importNode(document.querySelector('#answer-template'), true);
     let $answerContent = $answerTemplate.content.querySelector('.js-answer-content');
@@ -82,7 +85,7 @@ function renderQuestion(question) {
 
 function setSlidesWidth() {
     windowWidth = window.innerWidth;
-    const $slides = Array.from(document.querySelectorAll('.js-slide'));
+    const $slides = nodeListToArray(document.querySelectorAll('.js-slide'));
 
     $slides.forEach(function($slide) {
         $slide.style.width = windowWidth + 'px';

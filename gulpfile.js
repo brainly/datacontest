@@ -6,10 +6,15 @@ const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
 const watchify = require('watchify');
 const babel = require('babelify');
+const autoprefixer = require('gulp-autoprefixer');
 
 gulp.task('sass', () => {
     gulp.src('./sass/**/*.scss')
         .pipe(sass().on('error', sass.logError))
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
         .pipe(gulp.dest('./build/css'));
 });
 
