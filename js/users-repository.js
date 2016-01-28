@@ -40,8 +40,6 @@ class UsersRepository {
     }
 
     _addUser(id, user) {
-        console.log(id, user, this.users, this.getUserById(id));
-
         if(this.getUserById(id)) {
             return;
         }

@@ -66,11 +66,57 @@ function startApp() {
 
 function initQuestions(questions) {
     questions.forEach(renderQuestion);
+
+    questions.forEach((question, idx) => {
+        votesRepo.onVotesChange(idx, votes => {
+            console.log(idx, votes);
+            clearAvatars(idx);
+
+            for(let uid in votes) {
+                if(!votes.hasOwnProperty(uid)) {
+                    return;
+                }
+
+                let user = usersRepo.getUserById(uid);
+                let vote = votes[uid];
+
+                addAvatar({
+                    questionId: idx,
+                    user: user,
+                    vote: vote
+                });
+            }
+        });
+    });
     setSlidesWidth();
 }
 
+function clearAvatars(questionId) {
+    let $input = document.getElementById(`answer-${questionId}-0`);
+    let $answer = $input.parentNode.parentNode.parentNode.parentNode.parentNode;
+    let $answerersAll = $answer.querySelectorAll('.js-answerers');
+
+    Array.from($answerersAll).forEach($answerers => {
+        $answerers.innerHTML = '';
+    })
+}
+
+function addAvatar({questionId, user, vote}) {
+    let $input = document.getElementById(`answer-${questionId}-${vote}`);
+    let $answer = $input.parentNode.parentNode.parentNode;
+    let $answerers = $answer.querySelector('.js-answerers');
+
+    let $avatar = document.createElement('img');
+    $avatar.src = user.avatar;
+
+    //TODO fixme
+    $avatar.style.maxHeight = '20px';
+    $avatar.style.maxWidth = '20px';
+
+    $answerers.appendChild($avatar);
+}
+
 function questionChanged(questionIdx) {
-    console.log('qchange', questionIdx);
     changeSlide(questionIdx + 1);
 }
 

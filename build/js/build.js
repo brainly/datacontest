@@ -3,9 +3,9 @@
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-var _user = require('./user.js');
+var _user2 = require('./user.js');
 
-var _user2 = _interopRequireDefault(_user);
+var _user3 = _interopRequireDefault(_user2);
 
 var _questionRepository = require('./question-repository.js');
 
@@ -22,7 +22,7 @@ var _usersRepository2 = _interopRequireDefault(_usersRepository);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ref = new Firebase("https://datacontest.firebaseio.com");
-var user = new _user2.default(ref);
+var user = new _user3.default(ref);
 var questionRepo = null;
 var votesRepo = null;
 var usersRepo = null;
@@ -82,11 +82,61 @@ function startApp() {
 
 function initQuestions(questions) {
     questions.forEach(renderQuestion);
+
+    questions.forEach(function (question, idx) {
+        votesRepo.onVotesChange(idx, function (votes) {
+            console.log(idx, votes);
+            clearAvatars(idx);
+
+            for (var uid in votes) {
+                if (!votes.hasOwnProperty(uid)) {
+                    return;
+                }
+
+                var _user = usersRepo.getUserById(uid);
+                var vote = votes[uid];
+
+                addAvatar({
+                    questionId: idx,
+                    user: _user,
+                    vote: vote
+                });
+            }
+        });
+    });
     setSlidesWidth();
 }
 
+function clearAvatars(questionId) {
+    var $input = document.getElementById('answer-' + questionId + '-0');
+    var $answer = $input.parentNode.parentNode.parentNode.parentNode.parentNode;
+    var $answerersAll = $answer.querySelectorAll('.js-answerers');
+
+    Array.from($answerersAll).forEach(function ($answerers) {
+        $answerers.innerHTML = '';
+    });
+}
+
+function addAvatar(_ref) {
+    var questionId = _ref.questionId;
+    var user = _ref.user;
+    var vote = _ref.vote;
+
+    var $input = document.getElementById('answer-' + questionId + '-' + vote);
+    var $answer = $input.parentNode.parentNode.parentNode;
+    var $answerers = $answer.querySelector('.js-answerers');
+
+    var $avatar = document.createElement('img');
+    $avatar.src = user.avatar;
+
+    //TODO fixme
+    $avatar.style.maxHeight = '20px';
+    $avatar.style.maxWidth = '20px';
+
+    $answerers.appendChild($avatar);
+}
+
 function questionChanged(questionIdx) {
-    console.log('qchange', questionIdx);
     changeSlide(questionIdx + 1);
 }
 
@@ -386,8 +436,6 @@ var UsersRepository = function () {
     }, {
         key: '_addUser',
         value: function _addUser(id, user) {
-            console.log(id, user, this.users, this.getUserById(id));
-
             if (this.getUserById(id)) {
                 return;
             }
@@ -443,6 +491,7 @@ var VotesRepository = function () {
             'votes-change': [],
             'error': []
         };
+        this.votes = {};
     }
 
     _createClass(VotesRepository, [{
@@ -466,9 +515,22 @@ var VotesRepository = function () {
     }, {
         key: 'onVotesChange',
         value: function onVotesChange(questionId, listener) {
-            this.firebase.child('votes/' + questionId + '/').on('child_added', function (data) {
-                var votes = data.val();
-                listener(votes);
+            var _this = this;
+
+            this.votes[questionId] = {};
+
+            this.firebase.child('votes/' + questionId).on('child_added', function (data) {
+                var voteId = data.val();
+                var userId = data.key();
+                _this.votes[questionId][userId] = voteId;
+                listener(_this.votes[questionId]);
+            });
+
+            this.firebase.child('votes/' + questionId).on('child_changed', function (data) {
+                var voteId = data.val();
+                var userId = data.key();
+                _this.votes[questionId][userId] = voteId;
+                listener(_this.votes[questionId]);
             });
         }
     }]);

@@ -14,8 +14,6 @@ body {
   transition: background-color 0.5s; }
 
 .app-contest {
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
   position: absolute;
   left: 0;
@@ -27,8 +25,6 @@ body {
     margin-bottom: 24px;
     text-align: center; }
   .app-contest__slide {
-    -webkit-flex-shrink: 0;
-    -ms-flex-negative: 0;
     flex-shrink: 0; }
   .app-contest__action {
     margin-top: 48px; }
@@ -39,9 +35,6 @@ body {
   .app-contest .mint-label__text {
     color: #ffffff; }
   .app-contest .mint-label__icon {
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    -ms-grid-row-align: center;
     align-items: center; }
   .app-contest .mint-label {
     margin-bottom: 12px; }

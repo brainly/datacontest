@@ -6,6 +6,7 @@ class VotesRepository {
             'votes-change': [],
             'error': []
         };
+        this.votes = {};
     }
 
     vote(questionId, answerId) {
@@ -24,9 +25,20 @@ class VotesRepository {
     }
 
     onVotesChange(questionId, listener) {
-        (this.firebase).child(`votes/${questionId}/`).on('child_added', (data) => {
-            let votes = data.val();
-            listener(votes);
+        this.votes[questionId] = {};
+
+        (this.firebase).child(`votes/${questionId}`).on('child_added', (data) => {
+            let voteId = data.val();
+            let userId = data.key();
+            this.votes[questionId][userId] = voteId;
+            listener(this.votes[questionId]);
+        });
+
+        (this.firebase).child(`votes/${questionId}`).on('child_changed', (data) => {
+            let voteId = data.val();
+            let userId = data.key();
+            this.votes[questionId][userId] = voteId;
+            listener(this.votes[questionId]);
         });
     }
 }
