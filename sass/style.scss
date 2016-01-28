@@ -10,17 +10,17 @@ body {
   left: 0;
   right: 0;
   top: 0;
-  position: absolute;
+  position: fixed;
   overflow: hidden;
   transition: background-color 0.5s;
 }
-
 
 .app-contest {
   display: flex;
   position: absolute;
   left: 0;
   transition: left 0.5s;
+  overflow: hidden;
 
   &__header {
     margin-bottom: 48px;

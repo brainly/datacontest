@@ -9,7 +9,7 @@ body {
   left: 0;
   right: 0;
   top: 0;
-  position: absolute;
+  position: fixed;
   overflow: hidden;
   transition: background-color 0.5s; }
 
@@ -19,7 +19,8 @@ body {
   display: flex;
   position: absolute;
   left: 0;
-  transition: left 0.5s; }
+  transition: left 0.5s;
+  overflow: hidden; }
   .app-contest__header {
     margin-bottom: 48px; }
   .app-contest__content {
