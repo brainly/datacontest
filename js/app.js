@@ -86,6 +86,8 @@ function changeBackground(questionIdx) {
 
     if (questionIdx != 0) {
         document.body.style.backgroundColor = colors[rand];
+    } else {
+        document.body.style.backgroundColor = '';
     }
 }
 
