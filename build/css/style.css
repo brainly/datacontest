@@ -1,0 +1,10 @@
+body {
+  padding: 10px;
+  margin: 50px; }
+
+.app-contest__header {
+  margin-bottom: 48px; }
+
+.app-contest__content {
+  margin-bottom: 72px;
+  text-align: center; }
