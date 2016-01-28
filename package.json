@@ -1,5 +1,5 @@
 {
-  "name": "datacontest",
+  "name": "Data Contest App",
   "version": "1.0.0",
   "description": "",
   "main": "gulpfile.js",
@@ -10,17 +10,21 @@
     "type": "git",
     "url": "git+https://github.com/brainly/datacontest.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Brainly",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/brainly/datacontest/issues"
   },
   "homepage": "https://github.com/brainly/datacontest#readme",
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13",
+    "babelify": "^7.2.0",
+    "browserify": "^13.0.0",
     "gulp": "^3.9.0",
-    "gulp-babel": "^6.1.1",
     "gulp-sass": "^2.1.1",
-    "gulp-sourcemaps": "^1.6.0"
+    "gulp-sourcemaps": "^1.6.0",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.7.0"
   }
 }
