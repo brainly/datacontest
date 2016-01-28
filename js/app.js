@@ -138,7 +138,8 @@ function renderQuestion(question, questionId) {
     $questionContent.textContent = question.text;
     $question.setAttribute('id', 'question-' + questionId);
     $questionClone = document.importNode($questionTemplate.content, true);
-    $appElement.appendChild($questionClone);
+    //$appElement.appendChild($questionClone);
+    $appElement.insertBefore($questionClone, document.querySelector('.js-last-slide'));
 
 
     $question = document.getElementById('question-' + questionId);
