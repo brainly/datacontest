@@ -15,12 +15,17 @@ var _votesRepository = require('./votes-repository.js');
 
 var _votesRepository2 = _interopRequireDefault(_votesRepository);
 
+var _usersRepository = require('./users-repository.js');
+
+var _usersRepository2 = _interopRequireDefault(_usersRepository);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ref = new Firebase("https://datacontest.firebaseio.com");
 var user = new _user2.default(ref);
 var questionRepo = null;
 var votesRepo = null;
+var usersRepo = null;
 
 var $btn = document.querySelector('.js-log-in');
 var $name = document.querySelector('.js-user-name');
@@ -51,6 +56,25 @@ function startApp() {
     questionRepo.onError(showError);
 
     votesRepo = new _votesRepository2.default(ref, user.id);
+
+    usersRepo = new _usersRepository2.default(ref);
+    usersRepo.register(user);
+
+    usersRepo.onUsersChange(function () {
+        var usersList = document.querySelector('.js-loggedin-users');
+        usersList.innerHTML = '';
+
+        console.log(usersRepo.users);
+
+        Array.from(usersRepo.users).forEach(function (user) {
+            var img = document.createElement('img');
+            img.src = user.avatar;
+            img.style.maxWidth = '30px';
+            img.style.maxHeight = '30px';
+
+            usersList.appendChild(img);
+        });
+    });
 
     window.votesRepo = votesRepo;
     $btn.style.display = 'none';
@@ -147,7 +171,7 @@ setSlidesWidth();
 
 window.changeSlide = changeSlide;
 
-},{"./question-repository.js":2,"./user.js":3,"./votes-repository.js":4}],2:[function(require,module,exports){
+},{"./question-repository.js":2,"./user.js":3,"./users-repository.js":4,"./votes-repository.js":5}],2:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -296,9 +320,108 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var VoteRepository = function () {
-    function VoteRepository(firebase, userId) {
-        _classCallCheck(this, VoteRepository);
+var UsersRepository = function () {
+    function UsersRepository(firebase, userId) {
+        var _this = this;
+
+        _classCallCheck(this, UsersRepository);
+
+        this.userId = userId;
+        this.firebase = firebase;
+        this._listeners = {
+            'users-change': [],
+            'error': []
+        };
+        this.users = [];
+
+        this.firebase.child('users/').once('value', function (data) {
+            var users = data.val();
+
+            for (var uid in users) {
+                if (users.hasOwnProperty(uid)) {
+                    _this._addUser(uid, users[uid]);
+                }
+            }
+
+            _this._trigger('users-change');
+        });
+
+        this.firebase.child('users/').on('child_added', function (data) {
+            _this._addUser(data.key(), data.val());
+            _this._trigger('users-change');
+        });
+    }
+
+    _createClass(UsersRepository, [{
+        key: 'register',
+        value: function register(user) {
+            var votesRef = this.firebase.child('users/' + user.id);
+            votesRef.set({
+                name: user.name,
+                avatar: user.avatar
+            });
+        }
+    }, {
+        key: 'getUserById',
+        value: function getUserById(id) {
+            var user = this.users.filter(function (user) {
+                return user.id === id;
+            });
+            return user.length ? user[0] : null;
+        }
+    }, {
+        key: '_addUser',
+        value: function _addUser(id, user) {
+            console.log(id, user, this.users, this.getUserById(id));
+
+            if (this.getUserById(id)) {
+                return;
+            }
+
+            this.users.push({
+                id: id,
+                name: user.name,
+                avatar: user.avatar
+            });
+        }
+    }, {
+        key: '_trigger',
+        value: function _trigger(action, data) {
+            this._listeners[action].forEach(function (callback) {
+                callback(data);
+            });
+        }
+    }, {
+        key: 'onError',
+        value: function onError(listener) {
+            this._listeners['error'].push(listener);
+        }
+    }, {
+        key: 'onUsersChange',
+        value: function onUsersChange(listener) {
+            this._listeners['users-change'].push(listener);
+        }
+    }]);
+
+    return UsersRepository;
+}();
+
+exports.default = UsersRepository;
+
+},{}],5:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var VotesRepository = function () {
+    function VotesRepository(firebase, userId) {
+        _classCallCheck(this, VotesRepository);
 
         this.userId = userId;
         this.firebase = firebase;
@@ -306,13 +429,9 @@ var VoteRepository = function () {
             'votes-change': [],
             'error': []
         };
-
-        //(this.firebase).child('votes/').on('child_added', (data) => {
-        //    console.log('child_added', data);
-        //});
     }
 
-    _createClass(VoteRepository, [{
+    _createClass(VotesRepository, [{
         key: 'vote',
         value: function vote(questionId, answerId) {
             var votesRef = this.firebase.child('votes/' + questionId + '/' + this.userId);
@@ -332,15 +451,18 @@ var VoteRepository = function () {
         }
     }, {
         key: 'onVotesChange',
-        value: function onVotesChange(listener) {
-            this._listeners['votes-change'].push(listener);
+        value: function onVotesChange(questionId, listener) {
+            this.firebase.child('votes/' + questionId + '/').on('child_added', function (data) {
+                var votes = data.val();
+                listener(votes);
+            });
         }
     }]);
 
-    return VoteRepository;
+    return VotesRepository;
 }();
 
-exports.default = VoteRepository;
+exports.default = VotesRepository;
 
 },{}]},{},[1])
 

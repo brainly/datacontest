@@ -1,11 +1,13 @@
 import User from './user.js';
 import QuestionRepository from './question-repository.js';
 import VotesRepository from './votes-repository.js';
+import UsersRepository from './users-repository.js';
 
 const ref = new Firebase("https://datacontest.firebaseio.com");
 const user = new User(ref);
 let questionRepo = null;
 let votesRepo = null;
+let usersRepo = null;
 
 const $btn = document.querySelector('.js-log-in');
 const $name = document.querySelector('.js-user-name');
@@ -38,6 +40,25 @@ function startApp() {
     questionRepo.onError(showError);
 
     votesRepo = new VotesRepository(ref, user.id);
+
+    usersRepo = new UsersRepository(ref);
+    usersRepo.register(user);
+
+    usersRepo.onUsersChange(() => {
+        let usersList = document.querySelector('.js-loggedin-users');
+        usersList.innerHTML = '';
+
+        console.log(usersRepo.users);
+
+        Array.from(usersRepo.users).forEach(user => {
+            let img = document.createElement('img');
+            img.src = user.avatar;
+            img.style.maxWidth = '30px';
+            img.style.maxHeight = '30px';
+
+            usersList.appendChild(img);
+        })
+    });
 
     window.votesRepo = votesRepo;
     $btn.style.display = 'none';

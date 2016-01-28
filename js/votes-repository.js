@@ -1,4 +1,4 @@
-class VoteRepository {
+class VotesRepository {
     constructor(firebase, userId) {
         this.userId = userId;
         this.firebase = firebase;
@@ -6,10 +6,6 @@ class VoteRepository {
             'votes-change': [],
             'error': []
         };
-
-        //(this.firebase).child('votes/').on('child_added', (data) => {
-        //    console.log('child_added', data);
-        //});
     }
 
     vote(questionId, answerId) {
@@ -27,9 +23,12 @@ class VoteRepository {
         this._listeners['error'].push(listener);
     }
 
-    onVotesChange(listener) {
-        this._listeners['votes-change'].push(listener);
+    onVotesChange(questionId, listener) {
+        (this.firebase).child(`votes/${questionId}/`).on('child_added', (data) => {
+            let votes = data.val();
+            listener(votes);
+        });
     }
 }
 
-export default VoteRepository;
+export default VotesRepository;
