@@ -88,9 +88,9 @@ function renderAnswer(answer, answerId, questionId) {
     $answerButton.dataset.answerId = answerId;
     $answerButton.dataset.questionId = questionId;
 
-    $answerButton.setAttribute('id', 'answer-' + answerId);
-    $answerGhostLabel.setAttribute('for', 'answer-' + answerId);
-    $answerContent.setAttribute('for', 'answer-' + answerId);
+    $answerButton.setAttribute('id', 'answer-' + questionId + '-' + answerId);
+    $answerGhostLabel.setAttribute('for', 'answer-' + questionId + '-' + answerId);
+    $answerContent.setAttribute('for', 'answer-' + questionId + '-' + answerId);
 
     $answer = document.importNode($answerTemplate.content, true);
 
@@ -105,7 +105,7 @@ function renderQuestion(question, questionId) {
     var $questionClone = undefined;
 
     question.answers.forEach(function (answer, index) {
-        $answersList.appendChild(renderAnswer(answer, index + 1, questionId + 1));
+        $answersList.appendChild(renderAnswer(answer, index, questionId));
     });
 
     $questionContent.textContent = question.text;
@@ -122,8 +122,10 @@ function initBindings($question) {
 
     $answerRadioButtons.forEach(function ($radioButton) {
         $radioButton.addEventListener('change', function () {
-            console.log('question', $radioButton.dataset.questionId);
-            console.log('answerId', $radioButton.dataset.answerId);
+            var questionId = parseInt($radioButton.dataset.questionId, 10);
+            var answerId = parseInt($radioButton.dataset.answerId, 10);
+
+            votesRepo.vote(questionId, answerId);
         });
     });
 }
