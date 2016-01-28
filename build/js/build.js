@@ -173,6 +173,7 @@ function setSlidesWidth() {
 }
 
 function changeSlide(slideIndex) {
+    windowWidth = window.innerWidth;
     $appElement.style.left = -(slideIndex * windowWidth) + 'px';
     changeBackground(slideIndex);
 }
