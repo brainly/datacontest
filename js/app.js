@@ -60,11 +60,17 @@ function renderAnswer(answer, answerId, questionId) {
     let $answerTemplate = document.importNode(document.querySelector('#answer-template'), true);
     let $answerButton =  $answerTemplate.content.querySelector('.js-answer-radio-button');
     let $answerContent = $answerTemplate.content.querySelector('.js-answer-content');
+    let $answerGhostLabel = $answerTemplate.content.querySelector('.js-answer-ghost-label');
     let $answer;
+
 
     $answerContent.textContent = answer;
     $answerButton.dataset.answerId = answerId;
     $answerButton.dataset.questionId = questionId;
+
+    $answerButton.setAttribute('id', 'answer-' + answerId);
+    $answerGhostLabel.setAttribute('for', 'answer-' + answerId);
+    $answerContent.setAttribute('for', 'answer-' + answerId);
 
     $answer = document.importNode($answerTemplate.content, true);
 
@@ -73,29 +79,34 @@ function renderAnswer(answer, answerId, questionId) {
 
 function renderQuestion(question, questionId) {
     let $questionTemplate = document.importNode(document.querySelector('#question-template'), true);
+    let $question = $questionTemplate.content.querySelector('.js-question');
     let $questionContent = $questionTemplate.content.querySelector('.js-question-content');
     let $answersList = $questionTemplate.content.querySelector('.js-answers-list');
-    let $question;
-    let $answerRadioButtons;
+    let $questionClone;
 
     question.answers.forEach((answer, index) => {
-        $answersList.appendChild(renderAnswer(answer, index + 1, questionId));
+        $answersList.appendChild(renderAnswer(answer, index + 1, questionId + 1));
     });
-
-    $answerRadioButtons = Array.from($answersList.querySelectorAll('.js-answer-radio-button'));
-
-
-    $answerRadioButtons.foreach(($radioButton) => {
-        $radioButton.addEventListener('change', function() {
-            console.log('klikłem');
-        });
-    });
-
 
     $questionContent.textContent = question.text;
-    $question = document.importNode($questionTemplate.content, true);
-    $appElement.appendChild($question);
+    $question.setAttribute('id', 'question-' + questionId);
+    $questionClone = document.importNode($questionTemplate.content, true);
+    $appElement.appendChild($questionClone);
 
+
+    $question = document.getElementById('question-' + questionId);
+    initBindings($question);
+}
+
+function initBindings($question) {
+    let $answerRadioButtons = Array.from($question.querySelectorAll('.js-answer-radio-button'));
+
+    $answerRadioButtons.forEach(($radioButton) => {
+        $radioButton.addEventListener('change', function() {
+            console.log('question', $radioButton.dataset.questionId);
+            console.log('answerId', $radioButton.dataset.answerId);
+        });
+    });
 }
 
 function setSlidesWidth() {
