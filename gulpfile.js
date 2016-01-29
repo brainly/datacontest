@@ -7,6 +7,7 @@ const buffer = require('vinyl-buffer');
 const watchify = require('watchify');
 const babel = require('babelify');
 const autoprefixer = require('gulp-autoprefixer');
+const react = require('gulp-react');
 
 gulp.task('sass', () => {
     gulp.src('./sass/**/*.scss')
@@ -21,7 +22,7 @@ gulp.task('sass', () => {
 function compile(watch) {
     var bundler = watchify(browserify('./js/app.js', { debug: true })
         .transform(babel.configure({
-            presets: ["es2015"]
+            presets: ["es2015","react"]
         })));
 
     function rebundle() {
@@ -30,6 +31,7 @@ function compile(watch) {
             .pipe(source('build.js'))
             .pipe(buffer())
             .pipe(sourcemaps.init({ loadMaps: true }))
+            .pipe(react())
             .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest('./build/js'));
     }

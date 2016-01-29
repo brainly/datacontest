@@ -27,6 +27,10 @@ body {
     margin-bottom: 24px;
     text-align: center;
   }
+  
+  &__slides {
+    display: flex;
+  }
 
   &__slide {
     width: 100vw;
@@ -36,10 +40,6 @@ body {
 
   &__action {
     margin-top: 48px;
-  }
-
-  .mint-label__text {
-    color: #ffffff;
   }
 
   .mint-label__icon {
