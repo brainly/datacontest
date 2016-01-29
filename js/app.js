@@ -4,35 +4,32 @@ import VotesRepository from './votes-repository.js';
 import UsersRepository from './users-repository.js';
 
 const ref = new Firebase("https://datacontest.firebaseio.com");
+
 const user = new User(ref);
 let questionRepo = null;
 let votesRepo = null;
 let usersRepo = null;
 
-const $btn = document.querySelector('.js-log-in');
-const $name = document.querySelector('.js-user-name');
-const $avatar = document.querySelector('.js-user-avatar');
-const $avatarImage = $avatar.querySelector('.js-user-avatar-image');
+const questionTemplate = document.querySelector('#question-template');
+const answerTemplate = document.querySelector('#answer-template');
+const avatarTemplate = document.querySelector('#avatar-template');
 
 const $appElement = document.querySelector('.js-app');
-let windowWidth = window.innerWidth;
 
-if(user.isAuthenticated()) {
+if (user.isAuthenticated()) {
     startApp();
 } else {
-    $btn.addEventListener('click', () => {
-        user.authenticate()
-            .then(startApp)
-            .catch(showError);
-    });
+    user.onAuth(startApp);
+
+    const $loginBtn = document.querySelector('.js-log-in');
+    $loginBtn.addEventListener('click', user.authenticate);
 }
 
-window.addEventListener('resize', setSlidesWidth);
-
 function startApp() {
-    $name.innerHTML = user.name;
-    $avatar.classList.remove('js-user-avatar-hidden');
+    const $avatarImage = document.querySelector('.js-user-avatar-image');
     $avatarImage.src = user.avatar;
+
+    changeSlide(1);
 
     questionRepo = new QuestionRepository(ref);
     questionRepo.onReady(initQuestions);
@@ -44,79 +41,24 @@ function startApp() {
     usersRepo = new UsersRepository(ref);
     usersRepo.register(user);
 
-    usersRepo.onUsersChange(() => {
-        let usersList = document.querySelector('.js-loggedin-users');
-        usersList.innerHTML = '';
+    usersRepo.onUserAdded(user => {
+        let $usersList = document.querySelector('.js-loggedin-users');
 
-        Array.from(usersRepo.users).forEach(user => {
+        let $avatarImage = avatarTemplate.content.querySelector('.js-avatar-image');
+        $avatarImage.setAttribute('src', user.avatar);
 
-            let $avatarTemplate = document.importNode(document.querySelector('#avatar-template'), true);
-            let $avatarImage = $avatarTemplate.content.querySelector('.js-avatar-image');
-            let $avatarClone;
-
-            $avatarImage.setAttribute('src', user.avatar);
-            $avatarClone = document.importNode($avatarTemplate.content, true);
-            usersList.appendChild($avatarClone);
-        })
+        let $avatar = document.importNode(avatarTemplate.content, true);
+        $usersList.appendChild($avatar);
     });
-
-    window.votesRepo = votesRepo;
-    $btn.style.display = 'none';
 }
 
 function initQuestions(questions) {
     questions.forEach(renderQuestion);
-
-    questions.forEach((question, idx) => {
-        votesRepo.onVotesChange(idx, votes => {
-            clearAvatars(idx);
-
-            for(let uid in votes) {
-                if(!votes.hasOwnProperty(uid)) {
-                    return;
-                }
-
-                let user = usersRepo.getUserById(uid);
-                let vote = votes[uid];
-
-                addAvatar({
-                    questionId: idx,
-                    user: user,
-                    vote: vote
-                });
-            }
-        });
-    });
-    setSlidesWidth();
-}
-
-function clearAvatars(questionId) {
-    let $input = document.getElementById(`answer-${questionId}-0`);
-    let $answer = $input.parentNode.parentNode.parentNode.parentNode.parentNode;
-    let $answerersAll = $answer.querySelectorAll('.js-answerers');
-
-    Array.from($answerersAll).forEach($answerers => {
-        $answerers.innerHTML = '';
-    })
-}
-
-function addAvatar({questionId, user, vote}) {
-    let $input = document.getElementById(`answer-${questionId}-${vote}`);
-    let $answer = $input.parentNode.parentNode.parentNode;
-    let $answerers = $answer.querySelector('.js-answerers');
-
-    let $avatarTemplate = document.importNode(document.querySelector('#avatar-template'), true);
-    let $avatarImage = $avatarTemplate.content.querySelector('.js-avatar-image');
-    let $avatarClone;
-
-    $avatarImage.setAttribute('src', user.avatar);
-    $avatarClone = document.importNode($avatarTemplate.content, true);
-
-    $answerers.appendChild($avatarClone);
 }
 
 function questionChanged(questionIdx) {
-    changeSlide(questionIdx + 1);
+    let startSlides = 2;
+    changeSlide(startSlides + questionIdx);
 }
 
 function changeBackground(questionIdx) {
@@ -139,7 +81,7 @@ function changeBackground(questionIdx) {
 function showError(error) {
     let message = error;
 
-    if(typeof message === 'object') {
+    if (typeof message === 'object') {
         message = message.code;
     }
 
@@ -147,47 +89,40 @@ function showError(error) {
     alert(message);
 }
 
-
 function renderAnswer(answer, answerId, questionId) {
-    let $answerTemplate = document.importNode(document.querySelector('#answer-template'), true);
-    let $answerButton =  $answerTemplate.content.querySelector('.js-answer-radio-button');
-    let $answerContent = $answerTemplate.content.querySelector('.js-answer-content');
-    let $answerGhostLabel = $answerTemplate.content.querySelector('.js-answer-ghost-label');
-    let $answer;
-
-
-    $answerContent.textContent = answer;
+    let $answerButton = answerTemplate.content.querySelector('.js-answer-radio-button');
     $answerButton.dataset.answerId = answerId;
     $answerButton.dataset.questionId = questionId;
-
     $answerButton.setAttribute('id', 'answer-' + questionId + '-' + answerId);
-    $answerGhostLabel.setAttribute('for', 'answer-' + questionId + '-' + answerId);
+
+    let $answerContent = answerTemplate.content.querySelector('.js-answer-content');
+    $answerContent.textContent = answer;
     $answerContent.setAttribute('for', 'answer-' + questionId + '-' + answerId);
 
-    $answer = document.importNode($answerTemplate.content, true);
+    let $answerGhostLabel = answerTemplate.content.querySelector('.js-answer-ghost-label');
+    $answerGhostLabel.setAttribute('for', 'answer-' + questionId + '-' + answerId);
 
-    return $answer;
+    return document.importNode(answerTemplate.content, true);
 }
 
 function renderQuestion(question, questionId) {
-    let $questionTemplate = document.importNode(document.querySelector('#question-template'), true);
-    let $question = $questionTemplate.content.querySelector('.js-question');
-    let $questionContent = $questionTemplate.content.querySelector('.js-question-content');
-    let $answersList = $questionTemplate.content.querySelector('.js-answers-list');
-    let $questionClone;
+    let $question = questionTemplate.content.querySelector('.js-question');
+    $question.setAttribute('id', 'question-' + questionId);
 
+    let $questionContent = questionTemplate.content.querySelector('.js-question-content');
+    $questionContent.textContent = question.text;
+
+    let $answersList = questionTemplate.content.querySelector('.js-answers-list');
+    $answersList.innerHTML = '';
     question.answers.forEach((answer, index) => {
         $answersList.appendChild(renderAnswer(answer, index, questionId));
     });
 
-    $questionContent.textContent = question.text;
-    $question.setAttribute('id', 'question-' + questionId);
-    $questionClone = document.importNode($questionTemplate.content, true);
-    //$appElement.appendChild($questionClone);
+    let $questionClone = document.importNode(questionTemplate.content, true);
+
     $appElement.insertBefore($questionClone, document.querySelector('.js-last-slide'));
-
-
     $question = document.getElementById('question-' + questionId);
+
     initBindings($question);
 }
 
@@ -195,7 +130,7 @@ function initBindings($question) {
     let $answerRadioButtons = Array.from($question.querySelectorAll('.js-answer-radio-button'));
 
     $answerRadioButtons.forEach(($radioButton) => {
-        $radioButton.addEventListener('change', function() {
+        $radioButton.addEventListener('change', function () {
             let questionId = parseInt($radioButton.dataset.questionId, 10);
             let answerId = parseInt($radioButton.dataset.answerId, 10);
 
@@ -204,20 +139,10 @@ function initBindings($question) {
     });
 }
 
-function setSlidesWidth() {
-    windowWidth = window.innerWidth;
-    const $slides = Array.from(document.querySelectorAll('.js-slide'));
-    $slides.forEach(function($slide) {
-        $slide.style.width = windowWidth + 'px';
-    });
-}
-
 function changeSlide(slideIndex) {
-    windowWidth = window.innerWidth;
-    $appElement.style.left = - (slideIndex * windowWidth) + 'px';
+    $appElement.style.left = -(slideIndex * 100) + 'vw';
     changeBackground(slideIndex);
 }
 
-setSlidesWidth();
-
+//TODO remove - debug
 window.changeSlide = changeSlide;

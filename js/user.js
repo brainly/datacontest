@@ -1,12 +1,14 @@
 class User {
     constructor(firebase) {
         this.firebase = firebase;
+        this._listeners = {
+            'auth': []
+        };
 
-        //check if logged in
-        let authData = (this.firebase).getAuth();
-        if (authData) {
+        (this.firebase).onAuth((authData) => {
             this._initUser(authData);
-        }
+            this._trigger('auth');
+        });
     }
 
     isAuthenticated() {
@@ -14,31 +16,35 @@ class User {
     }
 
     authenticate() {
-        return new Promise((resolve, reject) => {
+        (this.firebase).authWithOAuthRedirect("google", (error, authData) => {
+            if (error) {
+                this._trigger('error', error);
+            } else {
+                //this will never happen since on success user is redirected to the oauth page
+            }
+        }, {
+            remember: "sessionOnly",
+            scope: "email"
+        });
+    }
 
-            (this.firebase).authWithOAuthRedirect("google", (error, authData) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
+    onAuth(listener) {
+        this._listeners['auth'].push(listener);
+    }
 
-                this._initUser(authData);
-
-                resolve();
-            }, {
-                remember: "sessionOnly",
-                scope: "email"
-            });
+    _trigger(action, data) {
+        (this._listeners[action]).forEach((callback) => {
+            callback(data);
         });
     }
 
     _initUser(authData) {
         //TODO add "@brainly.com" check
 
-        this.id = authData.uid;
-        this.name = authData.google.displayName;
-        this.avatar = authData.google.profileImageURL;
-        this.email = authData.google.email;
+        this.id = authData ? authData.uid : null;
+        this.name = authData ? authData.google.displayName : null;
+        this.avatar = authData ? authData.google.profileImageURL : null;
+        this.email = authData ? authData.google.email : null;
     }
 }
 

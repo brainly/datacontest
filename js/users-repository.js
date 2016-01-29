@@ -3,26 +3,14 @@ class UsersRepository {
         this.userId = userId;
         this.firebase = firebase;
         this._listeners = {
-            'users-change': [],
+            'user-added': [],
             'error': []
         };
         this.users = [];
 
-        (this.firebase).child('users/').once('value', data => {
-            let users = data.val();
-
-            for(let uid in users) {
-                if(users.hasOwnProperty(uid)) {
-                    this._addUser(uid, users[uid]);
-                }
-            }
-
-            this._trigger('users-change');
-        });
-
         (this.firebase).child('users/').on('child_added', data => {
-            this._addUser(data.key(), data.val());
-            this._trigger('users-change');
+            let user = this._addUser(data.key(), data.val());
+            this._trigger('user-added', user);
         });
     }
 
@@ -44,11 +32,15 @@ class UsersRepository {
             return;
         }
 
-        this.users.push({
+        user = {
             id,
             name: user.name,
             avatar: user.avatar
-        });
+        };
+
+        this.users.push(user);
+
+        return user;
     }
 
     _trigger(action, data) {
@@ -61,8 +53,8 @@ class UsersRepository {
         this._listeners['error'].push(listener);
     }
 
-    onUsersChange(listener) {
-        this._listeners['users-change'].push(listener);
+    onUserAdded(listener) {
+        this._listeners['user-added'].push(listener);
     }
 }
 

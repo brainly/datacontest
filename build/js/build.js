@@ -3,9 +3,9 @@
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-var _user2 = require('./user.js');
+var _user = require('./user.js');
 
-var _user3 = _interopRequireDefault(_user2);
+var _user2 = _interopRequireDefault(_user);
 
 var _questionRepository = require('./question-repository.js');
 
@@ -22,33 +22,32 @@ var _usersRepository2 = _interopRequireDefault(_usersRepository);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ref = new Firebase("https://datacontest.firebaseio.com");
-var user = new _user3.default(ref);
+
+var user = new _user2.default(ref);
 var questionRepo = null;
 var votesRepo = null;
 var usersRepo = null;
 
-var $btn = document.querySelector('.js-log-in');
-var $name = document.querySelector('.js-user-name');
-var $avatar = document.querySelector('.js-user-avatar');
-var $avatarImage = $avatar.querySelector('.js-user-avatar-image');
+var questionTemplate = document.querySelector('#question-template');
+var answerTemplate = document.querySelector('#answer-template');
+var avatarTemplate = document.querySelector('#avatar-template');
 
 var $appElement = document.querySelector('.js-app');
-var windowWidth = window.innerWidth;
 
 if (user.isAuthenticated()) {
     startApp();
 } else {
-    $btn.addEventListener('click', function () {
-        user.authenticate().then(startApp).catch(showError);
-    });
+    user.onAuth(startApp);
+
+    var $loginBtn = document.querySelector('.js-log-in');
+    $loginBtn.addEventListener('click', user.authenticate);
 }
 
-window.addEventListener('resize', setSlidesWidth);
-
 function startApp() {
-    $name.innerHTML = user.name;
-    $avatar.classList.remove('js-user-avatar-hidden');
+    var $avatarImage = document.querySelector('.js-user-avatar-image');
     $avatarImage.src = user.avatar;
+
+    changeSlide(1);
 
     questionRepo = new _questionRepository2.default(ref);
     questionRepo.onReady(initQuestions);
@@ -60,83 +59,24 @@ function startApp() {
     usersRepo = new _usersRepository2.default(ref);
     usersRepo.register(user);
 
-    usersRepo.onUsersChange(function () {
-        var usersList = document.querySelector('.js-loggedin-users');
-        usersList.innerHTML = '';
+    usersRepo.onUserAdded(function (user) {
+        var $usersList = document.querySelector('.js-loggedin-users');
 
-        Array.from(usersRepo.users).forEach(function (user) {
+        var $avatarImage = avatarTemplate.content.querySelector('.js-avatar-image');
+        $avatarImage.setAttribute('src', user.avatar);
 
-            var $avatarTemplate = document.importNode(document.querySelector('#avatar-template'), true);
-            var $avatarImage = $avatarTemplate.content.querySelector('.js-avatar-image');
-            var $avatarClone = undefined;
-
-            $avatarImage.setAttribute('src', user.avatar);
-            $avatarClone = document.importNode($avatarTemplate.content, true);
-            usersList.appendChild($avatarClone);
-        });
+        var $avatar = document.importNode(avatarTemplate.content, true);
+        $usersList.appendChild($avatar);
     });
-
-    window.votesRepo = votesRepo;
-    $btn.style.display = 'none';
 }
 
 function initQuestions(questions) {
     questions.forEach(renderQuestion);
-
-    questions.forEach(function (question, idx) {
-        votesRepo.onVotesChange(idx, function (votes) {
-            clearAvatars(idx);
-
-            for (var uid in votes) {
-                if (!votes.hasOwnProperty(uid)) {
-                    return;
-                }
-
-                var _user = usersRepo.getUserById(uid);
-                var vote = votes[uid];
-
-                addAvatar({
-                    questionId: idx,
-                    user: _user,
-                    vote: vote
-                });
-            }
-        });
-    });
-    setSlidesWidth();
-}
-
-function clearAvatars(questionId) {
-    var $input = document.getElementById('answer-' + questionId + '-0');
-    var $answer = $input.parentNode.parentNode.parentNode.parentNode.parentNode;
-    var $answerersAll = $answer.querySelectorAll('.js-answerers');
-
-    Array.from($answerersAll).forEach(function ($answerers) {
-        $answerers.innerHTML = '';
-    });
-}
-
-function addAvatar(_ref) {
-    var questionId = _ref.questionId;
-    var user = _ref.user;
-    var vote = _ref.vote;
-
-    var $input = document.getElementById('answer-' + questionId + '-' + vote);
-    var $answer = $input.parentNode.parentNode.parentNode;
-    var $answerers = $answer.querySelector('.js-answerers');
-
-    var $avatarTemplate = document.importNode(document.querySelector('#avatar-template'), true);
-    var $avatarImage = $avatarTemplate.content.querySelector('.js-avatar-image');
-    var $avatarClone = undefined;
-
-    $avatarImage.setAttribute('src', user.avatar);
-    $avatarClone = document.importNode($avatarTemplate.content, true);
-
-    $answerers.appendChild($avatarClone);
 }
 
 function questionChanged(questionIdx) {
-    changeSlide(questionIdx + 1);
+    var startSlides = 2;
+    changeSlide(startSlides + questionIdx);
 }
 
 function changeBackground(questionIdx) {
@@ -163,43 +103,39 @@ function showError(error) {
 }
 
 function renderAnswer(answer, answerId, questionId) {
-    var $answerTemplate = document.importNode(document.querySelector('#answer-template'), true);
-    var $answerButton = $answerTemplate.content.querySelector('.js-answer-radio-button');
-    var $answerContent = $answerTemplate.content.querySelector('.js-answer-content');
-    var $answerGhostLabel = $answerTemplate.content.querySelector('.js-answer-ghost-label');
-    var $answer = undefined;
-
-    $answerContent.textContent = answer;
+    var $answerButton = answerTemplate.content.querySelector('.js-answer-radio-button');
     $answerButton.dataset.answerId = answerId;
     $answerButton.dataset.questionId = questionId;
-
     $answerButton.setAttribute('id', 'answer-' + questionId + '-' + answerId);
-    $answerGhostLabel.setAttribute('for', 'answer-' + questionId + '-' + answerId);
+
+    var $answerContent = answerTemplate.content.querySelector('.js-answer-content');
+    $answerContent.textContent = answer;
     $answerContent.setAttribute('for', 'answer-' + questionId + '-' + answerId);
 
-    $answer = document.importNode($answerTemplate.content, true);
+    var $answerGhostLabel = answerTemplate.content.querySelector('.js-answer-ghost-label');
+    $answerGhostLabel.setAttribute('for', 'answer-' + questionId + '-' + answerId);
 
-    return $answer;
+    return document.importNode(answerTemplate.content, true);
 }
 
 function renderQuestion(question, questionId) {
-    var $questionTemplate = document.importNode(document.querySelector('#question-template'), true);
-    var $question = $questionTemplate.content.querySelector('.js-question');
-    var $questionContent = $questionTemplate.content.querySelector('.js-question-content');
-    var $answersList = $questionTemplate.content.querySelector('.js-answers-list');
-    var $questionClone = undefined;
+    var $question = questionTemplate.content.querySelector('.js-question');
+    $question.setAttribute('id', 'question-' + questionId);
 
+    var $questionContent = questionTemplate.content.querySelector('.js-question-content');
+    $questionContent.textContent = question.text;
+
+    var $answersList = questionTemplate.content.querySelector('.js-answers-list');
+    $answersList.innerHTML = '';
     question.answers.forEach(function (answer, index) {
         $answersList.appendChild(renderAnswer(answer, index, questionId));
     });
 
-    $questionContent.textContent = question.text;
-    $question.setAttribute('id', 'question-' + questionId);
-    $questionClone = document.importNode($questionTemplate.content, true);
-    //$appElement.appendChild($questionClone);
-    $appElement.insertBefore($questionClone, document.querySelector('.js-last-slide'));
+    var $questionClone = document.importNode(questionTemplate.content, true);
 
+    $appElement.insertBefore($questionClone, document.querySelector('.js-last-slide'));
     $question = document.getElementById('question-' + questionId);
+
     initBindings($question);
 }
 
@@ -216,22 +152,12 @@ function initBindings($question) {
     });
 }
 
-function setSlidesWidth() {
-    windowWidth = window.innerWidth;
-    var $slides = Array.from(document.querySelectorAll('.js-slide'));
-    $slides.forEach(function ($slide) {
-        $slide.style.width = windowWidth + 'px';
-    });
-}
-
 function changeSlide(slideIndex) {
-    windowWidth = window.innerWidth;
-    $appElement.style.left = -(slideIndex * windowWidth) + 'px';
+    $appElement.style.left = -(slideIndex * 100) + 'vw';
     changeBackground(slideIndex);
 }
 
-setSlidesWidth();
-
+//TODO remove - debug
 window.changeSlide = changeSlide;
 
 },{"./question-repository.js":2,"./user.js":3,"./users-repository.js":4,"./votes-repository.js":5}],2:[function(require,module,exports){
@@ -305,7 +231,7 @@ var QuestionRepository = function () {
 exports.default = QuestionRepository;
 
 },{}],3:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -317,53 +243,63 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var User = function () {
     function User(firebase) {
+        var _this = this;
+
         _classCallCheck(this, User);
 
         this.firebase = firebase;
+        this._listeners = {
+            'auth': []
+        };
 
-        //check if logged in
-        var authData = this.firebase.getAuth();
-        if (authData) {
-            this._initUser(authData);
-        }
+        this.firebase.onAuth(function (authData) {
+            _this._initUser(authData);
+            _this._trigger('auth');
+        });
     }
 
     _createClass(User, [{
-        key: "isAuthenticated",
+        key: 'isAuthenticated',
         value: function isAuthenticated() {
             return this.name && this.email;
         }
     }, {
-        key: "authenticate",
+        key: 'authenticate',
         value: function authenticate() {
-            var _this = this;
+            var _this2 = this;
 
-            return new Promise(function (resolve, reject) {
-
-                _this.firebase.authWithOAuthRedirect("google", function (error, authData) {
-                    if (error) {
-                        reject(error);
-                        return;
-                    }
-
-                    _this._initUser(authData);
-
-                    resolve();
-                }, {
-                    remember: "sessionOnly",
-                    scope: "email"
-                });
+            this.firebase.authWithOAuthRedirect("google", function (error, authData) {
+                if (error) {
+                    _this2._trigger('error', error);
+                } else {
+                    //this will never happen since on success user is redirected to the oauth page
+                }
+            }, {
+                remember: "sessionOnly",
+                scope: "email"
             });
         }
     }, {
-        key: "_initUser",
+        key: 'onAuth',
+        value: function onAuth(listener) {
+            this._listeners['auth'].push(listener);
+        }
+    }, {
+        key: '_trigger',
+        value: function _trigger(action, data) {
+            this._listeners[action].forEach(function (callback) {
+                callback(data);
+            });
+        }
+    }, {
+        key: '_initUser',
         value: function _initUser(authData) {
             //TODO add "@brainly.com" check
 
-            this.id = authData.uid;
-            this.name = authData.google.displayName;
-            this.avatar = authData.google.profileImageURL;
-            this.email = authData.google.email;
+            this.id = authData ? authData.uid : null;
+            this.name = authData ? authData.google.displayName : null;
+            this.avatar = authData ? authData.google.profileImageURL : null;
+            this.email = authData ? authData.google.email : null;
         }
     }]);
 
@@ -392,26 +328,14 @@ var UsersRepository = function () {
         this.userId = userId;
         this.firebase = firebase;
         this._listeners = {
-            'users-change': [],
+            'user-added': [],
             'error': []
         };
         this.users = [];
 
-        this.firebase.child('users/').once('value', function (data) {
-            var users = data.val();
-
-            for (var uid in users) {
-                if (users.hasOwnProperty(uid)) {
-                    _this._addUser(uid, users[uid]);
-                }
-            }
-
-            _this._trigger('users-change');
-        });
-
         this.firebase.child('users/').on('child_added', function (data) {
-            _this._addUser(data.key(), data.val());
-            _this._trigger('users-change');
+            var user = _this._addUser(data.key(), data.val());
+            _this._trigger('user-added', user);
         });
     }
 
@@ -439,11 +363,15 @@ var UsersRepository = function () {
                 return;
             }
 
-            this.users.push({
+            user = {
                 id: id,
                 name: user.name,
                 avatar: user.avatar
-            });
+            };
+
+            this.users.push(user);
+
+            return user;
         }
     }, {
         key: '_trigger',
@@ -458,9 +386,9 @@ var UsersRepository = function () {
             this._listeners['error'].push(listener);
         }
     }, {
-        key: 'onUsersChange',
-        value: function onUsersChange(listener) {
-            this._listeners['users-change'].push(listener);
+        key: 'onUserAdded',
+        value: function onUserAdded(listener) {
+            this._listeners['user-added'].push(listener);
         }
     }]);
 
@@ -484,8 +412,8 @@ var VotesRepository = function () {
     function VotesRepository(firebase, userId) {
         _classCallCheck(this, VotesRepository);
 
-        this.userId = userId;
         this.firebase = firebase;
+        this.userId = userId;
         this._listeners = {
             'votes-change': [],
             'error': []

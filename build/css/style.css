@@ -1,22 +1,22 @@
-* {
-  box-sizing: border-box; }
-
 body {
   padding: 0;
   margin: 0;
-  width: 100%;
-  height: 100%;
   left: 0;
   right: 0;
   top: 0;
+  bottom: 0;
   position: fixed;
   overflow: hidden;
   transition: background-color 0.5s; }
 
 .app-contest {
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
   position: absolute;
   left: 0;
+  top: 0;
+  bottom: 0;
   transition: left 0.5s;
   overflow: hidden; }
   .app-contest__header {
@@ -25,16 +25,19 @@ body {
     margin-bottom: 24px;
     text-align: center; }
   .app-contest__slide {
-    flex-shrink: 0; }
+    width: 100vw;
+    -webkit-flex-shrink: 0;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    padding: 45px 30px 30px; }
   .app-contest__action {
     margin-top: 48px; }
-  .app-contest__question {
-    padding: 60px 30px 30px; }
-  .app-contest__welcome {
-    padding: 60px 30px 30px; }
   .app-contest .mint-label__text {
     color: #ffffff; }
   .app-contest .mint-label__icon {
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    -ms-grid-row-align: center;
     align-items: center; }
   .app-contest .mint-label {
     margin-bottom: 12px; }
@@ -42,6 +45,3 @@ body {
     font-size: 1.5rem;
     line-height: 1.5rem;
     margin-bottom: 24px; }
-
-.js-user-avatar-hidden {
-  display: none !important; }

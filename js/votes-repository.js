@@ -1,7 +1,7 @@
 class VotesRepository {
     constructor(firebase, userId) {
-        this.userId = userId;
         this.firebase = firebase;
+        this.userId = userId;
         this._listeners = {
             'votes-change': [],
             'error': []
