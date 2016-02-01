@@ -19,6 +19,10 @@ var _usersRepository = require('./users-repository.js');
 
 var _usersRepository2 = _interopRequireDefault(_usersRepository);
 
+var _changeBackgroundColor = require('./change-background-color.js');
+
+var _changeBackgroundColor2 = _interopRequireDefault(_changeBackgroundColor);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ref = new Firebase("https://datacontest.firebaseio.com");
@@ -31,6 +35,7 @@ var usersRepo = null;
 var questionTemplate = document.querySelector('#question-template');
 var answerTemplate = document.querySelector('#answer-template');
 var avatarTemplate = document.querySelector('#avatar-template');
+var $usersList = document.querySelector('.js-loggedin-users');
 
 var $appElement = document.querySelector('.js-app');
 
@@ -44,14 +49,12 @@ if (user.isAuthenticated()) {
 }
 
 function startApp() {
-    var $avatarImage = document.querySelector('.js-user-avatar-image');
-    $avatarImage.src = user.avatar;
-
+    displayUserAvatar();
     changeSlide(1);
 
     questionRepo = new _questionRepository2.default(ref);
     questionRepo.onReady(initQuestions);
-    questionRepo.onQuestionChange(questionChanged);
+    questionRepo.onQuestionChange(changeQuestion);
     questionRepo.onError(showError);
 
     votesRepo = new _votesRepository2.default(ref, user.id);
@@ -59,36 +62,17 @@ function startApp() {
     usersRepo = new _usersRepository2.default(ref);
     usersRepo.register(user);
 
-    usersRepo.onUserAdded(function (user) {
-        var $usersList = document.querySelector('.js-loggedin-users');
-
-        var $avatarImage = avatarTemplate.content.querySelector('.js-avatar-image');
-        $avatarImage.setAttribute('src', user.avatar);
-
-        var $avatar = document.importNode(avatarTemplate.content, true);
-        $usersList.appendChild($avatar);
-    });
+    usersRepo.onUserAdded(renderUser);
 }
 
 function initQuestions(questions) {
     questions.forEach(renderQuestion);
+    initBindings();
 }
 
-function questionChanged(questionIdx) {
+function changeQuestion(questionIdx) {
     var startSlides = 2;
     changeSlide(startSlides + questionIdx);
-}
-
-function changeBackground(questionIdx) {
-    var colors = ['#6ed6a0', '#5bb8ff', '#ff8073', '#ffbe32'];
-
-    var rand = Math.floor(Math.random() * colors.length);
-
-    if (questionIdx != 0) {
-        document.body.style.backgroundColor = colors[rand];
-    } else {
-        document.body.style.backgroundColor = '';
-    }
 }
 
 function showError(error) {
@@ -100,6 +84,20 @@ function showError(error) {
 
     console.error('error', error);
     alert(message);
+}
+
+function renderUser(user) {
+    clearUserListOnFirstRender();
+    var $avatarImage = avatarTemplate.content.querySelector('.js-avatar-image');
+    $avatarImage.setAttribute('src', user.avatar);
+
+    var $avatar = document.importNode(avatarTemplate.content, true);
+    $usersList.appendChild($avatar);
+}
+
+function clearUserListOnFirstRender() {
+    $usersList.innerHTML = '';
+    clearUserListOnFirstRender = function clearUserListOnFirstRender() {};
 }
 
 function renderAnswer(answer, answerId, questionId) {
@@ -119,9 +117,6 @@ function renderAnswer(answer, answerId, questionId) {
 }
 
 function renderQuestion(question, questionId) {
-    var $question = questionTemplate.content.querySelector('.js-question');
-    $question.setAttribute('id', 'question-' + questionId);
-
     var $questionContent = questionTemplate.content.querySelector('.js-question-content');
     $questionContent.textContent = question.text;
 
@@ -134,13 +129,10 @@ function renderQuestion(question, questionId) {
     var $questionClone = document.importNode(questionTemplate.content, true);
 
     $appElement.insertBefore($questionClone, document.querySelector('.js-last-slide'));
-    $question = document.getElementById('question-' + questionId);
-
-    initBindings($question);
 }
 
-function initBindings($question) {
-    var $answerRadioButtons = Array.from($question.querySelectorAll('.js-answer-radio-button'));
+function initBindings() {
+    var $answerRadioButtons = Array.from(document.querySelectorAll('.js-answer-radio-button'));
 
     $answerRadioButtons.forEach(function ($radioButton) {
         $radioButton.addEventListener('change', function () {
@@ -152,15 +144,39 @@ function initBindings($question) {
     });
 }
 
+function displayUserAvatar() {
+    var $avatarImage = document.querySelector('.js-user-avatar-image');
+    $avatarImage.src = user.avatar;
+}
+
 function changeSlide(slideIndex) {
     $appElement.style.left = -(slideIndex * 100) + 'vw';
-    changeBackground(slideIndex);
+    (0, _changeBackgroundColor2.default)(slideIndex);
 }
 
 //TODO remove - debug
 window.changeSlide = changeSlide;
 
-},{"./question-repository.js":2,"./user.js":3,"./users-repository.js":4,"./votes-repository.js":5}],2:[function(require,module,exports){
+},{"./change-background-color.js":2,"./question-repository.js":3,"./user.js":4,"./users-repository.js":5,"./votes-repository.js":6}],2:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = changeBackgroundColor;
+function changeBackgroundColor(index) {
+    var colors = ['#6ed6a0', '#5bb8ff', '#ff8073', '#ffbe32'];
+
+    var rand = Math.floor(Math.random() * colors.length);
+
+    if (index != 0) {
+        document.body.style.backgroundColor = colors[rand];
+    } else {
+        document.body.style.backgroundColor = '';
+    }
+}
+
+},{}],3:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -230,7 +246,7 @@ var QuestionRepository = function () {
 
 exports.default = QuestionRepository;
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -308,7 +324,7 @@ var User = function () {
 
 exports.default = User;
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -397,7 +413,7 @@ var UsersRepository = function () {
 
 exports.default = UsersRepository;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();

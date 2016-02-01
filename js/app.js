@@ -2,6 +2,7 @@ import User from './user.js';
 import QuestionRepository from './question-repository.js';
 import VotesRepository from './votes-repository.js';
 import UsersRepository from './users-repository.js';
+import changeBackgroundColor from './change-background-color.js';
 
 const ref = new Firebase("https://datacontest.firebaseio.com");
 
@@ -13,6 +14,7 @@ let usersRepo = null;
 const questionTemplate = document.querySelector('#question-template');
 const answerTemplate = document.querySelector('#answer-template');
 const avatarTemplate = document.querySelector('#avatar-template');
+const $usersList = document.querySelector('.js-loggedin-users');
 
 const $appElement = document.querySelector('.js-app');
 
@@ -26,14 +28,12 @@ if (user.isAuthenticated()) {
 }
 
 function startApp() {
-    const $avatarImage = document.querySelector('.js-user-avatar-image');
-    $avatarImage.src = user.avatar;
-
+    displayUserAvatar();
     changeSlide(1);
 
     questionRepo = new QuestionRepository(ref);
     questionRepo.onReady(initQuestions);
-    questionRepo.onQuestionChange(questionChanged);
+    questionRepo.onQuestionChange(changeQuestion);
     questionRepo.onError(showError);
 
     votesRepo = new VotesRepository(ref, user.id);
@@ -41,41 +41,17 @@ function startApp() {
     usersRepo = new UsersRepository(ref);
     usersRepo.register(user);
 
-    usersRepo.onUserAdded(user => {
-        let $usersList = document.querySelector('.js-loggedin-users');
-
-        let $avatarImage = avatarTemplate.content.querySelector('.js-avatar-image');
-        $avatarImage.setAttribute('src', user.avatar);
-
-        let $avatar = document.importNode(avatarTemplate.content, true);
-        $usersList.appendChild($avatar);
-    });
+    usersRepo.onUserAdded(renderUser);
 }
 
 function initQuestions(questions) {
     questions.forEach(renderQuestion);
+    initBindings();
 }
 
-function questionChanged(questionIdx) {
+function changeQuestion(questionIdx) {
     let startSlides = 2;
     changeSlide(startSlides + questionIdx);
-}
-
-function changeBackground(questionIdx) {
-    const colors = [
-        '#6ed6a0',
-        '#5bb8ff',
-        '#ff8073',
-        '#ffbe32'
-    ];
-
-    const rand = Math.floor(Math.random() * colors.length);
-
-    if (questionIdx != 0) {
-        document.body.style.backgroundColor = colors[rand];
-    } else {
-        document.body.style.backgroundColor = '';
-    }
 }
 
 function showError(error) {
@@ -87,6 +63,20 @@ function showError(error) {
 
     console.error('error', error);
     alert(message);
+}
+
+function renderUser(user) {
+    clearUserListOnFirstRender();
+    let $avatarImage = avatarTemplate.content.querySelector('.js-avatar-image');
+    $avatarImage.setAttribute('src', user.avatar);
+
+    let $avatar = document.importNode(avatarTemplate.content, true);
+    $usersList.appendChild($avatar);
+}
+
+function clearUserListOnFirstRender() {
+    $usersList.innerHTML = '';
+    clearUserListOnFirstRender = function() {};
 }
 
 function renderAnswer(answer, answerId, questionId) {
@@ -106,9 +96,6 @@ function renderAnswer(answer, answerId, questionId) {
 }
 
 function renderQuestion(question, questionId) {
-    let $question = questionTemplate.content.querySelector('.js-question');
-    $question.setAttribute('id', 'question-' + questionId);
-
     let $questionContent = questionTemplate.content.querySelector('.js-question-content');
     $questionContent.textContent = question.text;
 
@@ -121,27 +108,29 @@ function renderQuestion(question, questionId) {
     let $questionClone = document.importNode(questionTemplate.content, true);
 
     $appElement.insertBefore($questionClone, document.querySelector('.js-last-slide'));
-    $question = document.getElementById('question-' + questionId);
-
-    initBindings($question);
 }
 
-function initBindings($question) {
-    let $answerRadioButtons = Array.from($question.querySelectorAll('.js-answer-radio-button'));
+function initBindings() {
+    const $answerRadioButtons = Array.from(document.querySelectorAll('.js-answer-radio-button'));
 
     $answerRadioButtons.forEach(($radioButton) => {
         $radioButton.addEventListener('change', function () {
-            let questionId = parseInt($radioButton.dataset.questionId, 10);
-            let answerId = parseInt($radioButton.dataset.answerId, 10);
+            const questionId = parseInt($radioButton.dataset.questionId, 10);
+            const answerId = parseInt($radioButton.dataset.answerId, 10);
 
             votesRepo.vote(questionId, answerId);
         });
     });
 }
 
+function displayUserAvatar() {
+    const $avatarImage = document.querySelector('.js-user-avatar-image');
+    $avatarImage.src = user.avatar;
+}
+
 function changeSlide(slideIndex) {
     $appElement.style.left = -(slideIndex * 100) + 'vw';
-    changeBackground(slideIndex);
+    changeBackgroundColor(slideIndex);
 }
 
 //TODO remove - debug
