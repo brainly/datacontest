@@ -40,7 +40,7 @@ if (user.isAuthenticated()) {
     user.onAuth(startApp);
 
     var $loginBtn = document.querySelector('.js-log-in');
-    $loginBtn.addEventListener('click', user.authenticate);
+    $loginBtn.addEventListener('click', user.authenticate.bind(user));
 }
 
 function startApp() {
