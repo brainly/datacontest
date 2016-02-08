@@ -1,6 +1,6 @@
 import React from 'react';
 
-const UserAvatar = React.createClass({
+class UserAvatar extends React.Component {
    render() {
        return (
            <div className="mint-avatar mint-avatar--small">
@@ -10,6 +10,6 @@ const UserAvatar = React.createClass({
            </div>
        )
    }
-});
+}
 
 export default UserAvatar;

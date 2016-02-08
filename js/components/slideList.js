@@ -6,20 +6,22 @@ import QuestionRepository from '../question-repository';
 import UsersRepository from '../users-repository.js';
 import User from '../user';
 
-const SlideList = React.createClass({
-    getInitialState() {
-      return {
+class SlideList extends React.Component{
+    constructor() {
+        super();
+
+        this.state =  {
           questions : [],
           slideIndex: 0
-      }
-    },
+        }
+    }
 
     componentWillMount() {
         this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
         this.initQuestionRepository();
         this.initUser();
         this.initUsers();
-    },
+    }
 
     getQuestionList(questions) {
         return questions.map((question, index) => {
@@ -35,7 +37,7 @@ const SlideList = React.createClass({
                 answers : answerList
             };
         });
-    },
+    }
 
     changeQuestion(questionIndex = 0) {
         const slideIndex = parseInt(questionIndex, 10) + 2;
@@ -47,11 +49,9 @@ const SlideList = React.createClass({
             questions: this.questions,
             slideIndex: slideIndex
         });
-    },
+    }
 
-    showError() {
-
-    },
+    showError() {}
 
     initQuestionRepository() {
         this.questionRepo = new QuestionRepository(this.firebaseRef);
@@ -61,19 +61,19 @@ const SlideList = React.createClass({
                 questions: this.questions
             });
         });
-        this.questionRepo.onQuestionChange(this.changeQuestion);
+        this.questionRepo.onQuestionChange(this.changeQuestion.bind(this));
         this.questionRepo.onError(this.showError);
-    },
+    }
 
     initUser() {
         this.user = new User(this.firebaseRef);
         this.user.onAuth(this.changeQuestion);
-    },
+    }
 
     initUsers() {
         this.usersRepo = new UsersRepository(this.firebaseRef);
         this.usersRepo.register(this.user);
-    },
+    }
 
     render() {
         const questions = this.state.questions;
@@ -94,6 +94,6 @@ const SlideList = React.createClass({
             </div>
         )
     }
-});
+}
 
 export default SlideList;

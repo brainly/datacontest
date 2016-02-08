@@ -1,24 +1,26 @@
 import React from 'react';
 import Users from '../components/users.js';
 
-const Welcome = React.createClass({
-    getInitialState() {
-        return {
+class Welcome extends React.Component {
+    constructor() {
+        super();
+
+        this.state = {
             users: []
         }
-    },
+    }
 
     componentWillMount() {
         this.user = this.props.user;
         this.usersRepo = this.props.usersRepo;
-        this.usersRepo.onUserAdded(this.addUser);
-    },
+        this.usersRepo.onUserAdded(this.addUser.bind(this));
+    }
 
     addUser() {
         this.setState({
             users: this.usersRepo.users
         });
-    },
+    }
 
     render() {
         return (
@@ -42,6 +44,6 @@ const Welcome = React.createClass({
             </div>
         )
     }
-});
+}
 
 export default Welcome;

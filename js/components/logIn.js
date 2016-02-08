@@ -1,9 +1,10 @@
 import React from 'react';
 
-const LogIn = React.createClass({
+class LogIn extends React.Component {
     handleClick() {
         this.props.user.authenticate();
-    },
+    }
+
     render() {
         return(
             <div className="app-contest__slide">
@@ -23,7 +24,7 @@ const LogIn = React.createClass({
 
                 <div className="app-contest__action js-log-in">
                     <a className="mint-button-primary mint-button-primary--full"
-                        onClick={this.handleClick}>
+                        onClick={this.handleClick.bind(this)}>
                         <div className="mint-button-primary__hole">
                             Join the fun!
                         </div>
@@ -33,6 +34,6 @@ const LogIn = React.createClass({
             </div>
         )
     }
-});
+}
 
 export default LogIn;

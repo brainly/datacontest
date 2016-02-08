@@ -1,7 +1,7 @@
 import React from 'react';
 import Answer from '../components/answer.js';
 
-const Question = React.createClass({
+class Question extends React.Component {
     render() {
         const question = this.props.question;
         const answerNodes = question.answers.map((answer)  => {
@@ -25,6 +25,6 @@ const Question = React.createClass({
             </div>
         );
     }
-});
+}
 
 export default Question;

@@ -15,12 +15,16 @@ var _slideList2 = _interopRequireDefault(_slideList);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-(function start() {
+function start() {
     _reactDom2.default.render(_react2.default.createElement(_slideList2.default, null), document.getElementById('app'));
-})();
+}
+
+start();
 
 },{"./components/slideList.js":5,"react":170,"react-dom":41}],2:[function(require,module,exports){
 'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -36,55 +40,79 @@ var _votesRepository2 = _interopRequireDefault(_votesRepository);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Answer = _react2.default.createClass({
-    displayName: 'Answer',
-    handleChange: function handleChange() {
-        this.votesRepo.vote(this.questionId, this.answerId);
-    },
-    componentWillMount: function componentWillMount() {
-        this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
-        this.votesRepo = new _votesRepository2.default(this.firebaseRef, this.props.user.id);
-    },
-    render: function render() {
-        this.questionId = this.props.questionId;
-        this.answerId = this.props.answer.id;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-        var inputId = 'answer-' + this.questionId + '-' + this.answerId;
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-        return _react2.default.createElement(
-            'div',
-            { className: 'answer' },
-            _react2.default.createElement(
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Answer = function (_React$Component) {
+    _inherits(Answer, _React$Component);
+
+    function Answer() {
+        _classCallCheck(this, Answer);
+
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(Answer).call(this));
+    }
+
+    _createClass(Answer, [{
+        key: 'handleChange',
+        value: function handleChange() {
+            this.votesRepo.vote(this.questionId, this.answerId);
+        }
+    }, {
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
+            this.votesRepo = new _votesRepository2.default(this.firebaseRef, this.props.user.id);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            this.questionId = this.props.questionId;
+            this.answerId = this.props.answer.id;
+
+            var inputId = 'answer-' + this.questionId + '-' + this.answerId;
+
+            return _react2.default.createElement(
                 'div',
-                { className: 'mint-label mint-label--large mint-label--emphasised mint-label--secondary' },
+                { className: 'answer' },
                 _react2.default.createElement(
                     'div',
-                    { className: 'mint-label__icon' },
+                    { className: 'mint-label mint-label--large mint-label--emphasised mint-label--secondary' },
                     _react2.default.createElement(
                         'div',
-                        { className: 'mint-radio' },
-                        _react2.default.createElement('input', { id: inputId,
-                            className: 'mint-radio__element',
-                            name: 'answer',
-                            type: 'radio',
-                            onChange: this.handleChange }),
-                        _react2.default.createElement('label', { className: 'mint-radio__ghost', htmlFor: inputId })
+                        { className: 'mint-label__icon' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'mint-radio' },
+                            _react2.default.createElement('input', { id: inputId,
+                                className: 'mint-radio__element',
+                                name: 'answer',
+                                type: 'radio',
+                                onChange: this.handleChange.bind(this) }),
+                            _react2.default.createElement('label', { className: 'mint-radio__ghost', htmlFor: inputId })
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'label',
+                        { className: 'mint-label__text', htmlFor: inputId },
+                        this.props.answer.text
                     )
-                ),
-                _react2.default.createElement(
-                    'label',
-                    { className: 'mint-label__text', htmlFor: inputId },
-                    this.props.answer.text
                 )
-            )
-        );
-    }
-});
+            );
+        }
+    }]);
+
+    return Answer;
+}(_react2.default.Component);
 
 exports.default = Answer;
 
 },{"../votes-repository":12,"react":170}],3:[function(require,module,exports){
 "use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -96,56 +124,78 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var LogIn = _react2.default.createClass({
-    displayName: "LogIn",
-    handleClick: function handleClick() {
-        this.props.user.authenticate();
-    },
-    render: function render() {
-        return _react2.default.createElement(
-            "div",
-            { className: "app-contest__slide" },
-            _react2.default.createElement(
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var LogIn = function (_React$Component) {
+    _inherits(LogIn, _React$Component);
+
+    function LogIn() {
+        _classCallCheck(this, LogIn);
+
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(LogIn).apply(this, arguments));
+    }
+
+    _createClass(LogIn, [{
+        key: "handleClick",
+        value: function handleClick() {
+            this.props.user.authenticate();
+        }
+    }, {
+        key: "render",
+        value: function render() {
+            return _react2.default.createElement(
                 "div",
-                { className: "app-contest__header" },
+                { className: "app-contest__slide" },
                 _react2.default.createElement(
-                    "h1",
-                    { className: "mint-text-bit" },
+                    "div",
+                    { className: "app-contest__header" },
                     _react2.default.createElement(
-                        "span",
-                        { className: "mint-text-bit__hole" },
-                        _react2.default.createElement("div", { className: "mint-logo mint-logo--small" })
-                    ),
-                    "Data Contest"
-                )
-            ),
-            _react2.default.createElement(
-                "p",
-                { className: "mint-text" },
-                "Do you like contests? Do you enjoy getting prizes? This thing might be for you."
-            ),
-            _react2.default.createElement(
-                "div",
-                { className: "app-contest__action js-log-in" },
+                        "h1",
+                        { className: "mint-text-bit" },
+                        _react2.default.createElement(
+                            "span",
+                            { className: "mint-text-bit__hole" },
+                            _react2.default.createElement("div", { className: "mint-logo mint-logo--small" })
+                        ),
+                        "Data Contest"
+                    )
+                ),
                 _react2.default.createElement(
-                    "a",
-                    { className: "mint-button-primary mint-button-primary--full",
-                        onClick: this.handleClick },
+                    "p",
+                    { className: "mint-text" },
+                    "Do you like contests? Do you enjoy getting prizes? This thing might be for you."
+                ),
+                _react2.default.createElement(
+                    "div",
+                    { className: "app-contest__action js-log-in" },
                     _react2.default.createElement(
-                        "div",
-                        { className: "mint-button-primary__hole" },
-                        "Join the fun!"
+                        "a",
+                        { className: "mint-button-primary mint-button-primary--full",
+                            onClick: this.handleClick.bind(this) },
+                        _react2.default.createElement(
+                            "div",
+                            { className: "mint-button-primary__hole" },
+                            "Join the fun!"
+                        )
                     )
                 )
-            )
-        );
-    }
-});
+            );
+        }
+    }]);
+
+    return LogIn;
+}(_react2.default.Component);
 
 exports.default = LogIn;
 
 },{"react":170}],4:[function(require,module,exports){
 'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -161,41 +211,61 @@ var _answer2 = _interopRequireDefault(_answer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Question = _react2.default.createClass({
-    displayName: 'Question',
-    render: function render() {
-        var _this = this;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-        var question = this.props.question;
-        var answerNodes = question.answers.map(function (answer) {
-            return _react2.default.createElement(_answer2.default, { answer: answer, questionId: question.id, user: _this.props.user, key: answer.id });
-        });
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-        return _react2.default.createElement(
-            'div',
-            { className: 'app-contest__slide' },
-            _react2.default.createElement(
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Question = function (_React$Component) {
+    _inherits(Question, _React$Component);
+
+    function Question() {
+        _classCallCheck(this, Question);
+
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(Question).apply(this, arguments));
+    }
+
+    _createClass(Question, [{
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            var question = this.props.question;
+            var answerNodes = question.answers.map(function (answer) {
+                return _react2.default.createElement(_answer2.default, { answer: answer, questionId: question.id, user: _this2.props.user, key: answer.id });
+            });
+
+            return _react2.default.createElement(
                 'div',
-                { className: 'app-contest__question' },
-                _react2.default.createElement(
-                    'h1',
-                    { className: 'mint-header-secondary' },
-                    this.props.question.text
-                ),
+                { className: 'app-contest__slide' },
                 _react2.default.createElement(
                     'div',
-                    { className: 'app-content_answers' },
-                    answerNodes
+                    { className: 'app-contest__question' },
+                    _react2.default.createElement(
+                        'h1',
+                        { className: 'mint-header-secondary' },
+                        this.props.question.text
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'app-content_answers' },
+                        answerNodes
+                    )
                 )
-            )
-        );
-    }
-});
+            );
+        }
+    }]);
+
+    return Question;
+}(_react2.default.Component);
 
 exports.default = Question;
 
 },{"../components/answer.js":2,"react":170}],5:[function(require,module,exports){
 'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -231,96 +301,130 @@ var _user2 = _interopRequireDefault(_user);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var SlideList = _react2.default.createClass({
-    displayName: 'SlideList',
-    getInitialState: function getInitialState() {
-        return {
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SlideList = function (_React$Component) {
+    _inherits(SlideList, _React$Component);
+
+    function SlideList() {
+        _classCallCheck(this, SlideList);
+
+        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SlideList).call(this));
+
+        _this.state = {
             questions: [],
             slideIndex: 0
         };
-    },
-    componentWillMount: function componentWillMount() {
-        this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
-        this.initQuestionRepository();
-        this.initUser();
-        this.initUsers();
-    },
-    getQuestionList: function getQuestionList(questions) {
-        return questions.map(function (question, index) {
-            var answerList = question.answers.map(function (answer, index) {
+        return _this;
+    }
+
+    _createClass(SlideList, [{
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
+            this.initQuestionRepository();
+            this.initUser();
+            this.initUsers();
+        }
+    }, {
+        key: 'getQuestionList',
+        value: function getQuestionList(questions) {
+            return questions.map(function (question, index) {
+                var answerList = question.answers.map(function (answer, index) {
+                    return {
+                        id: index + 1,
+                        text: answer
+                    };
+                });
                 return {
                     id: index + 1,
-                    text: answer
+                    text: question.text,
+                    answers: answerList
                 };
             });
-            return {
-                id: index + 1,
-                text: question.text,
-                answers: answerList
+        }
+    }, {
+        key: 'changeQuestion',
+        value: function changeQuestion() {
+            var questionIndex = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+
+            var slideIndex = parseInt(questionIndex, 10) + 2;
+            this.style = {
+                left: -(slideIndex * 100) + 'vw'
             };
-        });
-    },
-    changeQuestion: function changeQuestion() {
-        var questionIndex = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
 
-        var slideIndex = parseInt(questionIndex, 10) + 2;
-        this.style = {
-            left: -(slideIndex * 100) + 'vw'
-        };
-
-        this.setState({
-            questions: this.questions,
-            slideIndex: slideIndex
-        });
-    },
-    showError: function showError() {},
-    initQuestionRepository: function initQuestionRepository() {
-        var _this = this;
-
-        this.questionRepo = new _questionRepository2.default(this.firebaseRef);
-        this.questionRepo.onReady(function (questions) {
-            _this.questions = _this.getQuestionList(questions);
-            _this.setState({
-                questions: _this.questions
+            this.setState({
+                questions: this.questions,
+                slideIndex: slideIndex
             });
-        });
-        this.questionRepo.onQuestionChange(this.changeQuestion);
-        this.questionRepo.onError(this.showError);
-    },
-    initUser: function initUser() {
-        this.user = new _user2.default(this.firebaseRef);
-        this.user.onAuth(this.changeQuestion);
-    },
-    initUsers: function initUsers() {
-        this.usersRepo = new _usersRepository2.default(this.firebaseRef);
-        this.usersRepo.register(this.user);
-    },
-    render: function render() {
-        var _this2 = this;
+        }
+    }, {
+        key: 'showError',
+        value: function showError() {}
+    }, {
+        key: 'initQuestionRepository',
+        value: function initQuestionRepository() {
+            var _this2 = this;
 
-        var questions = this.state.questions;
-        var questionNodes = questions.map(function (question) {
-            return _react2.default.createElement(_question2.default, { question: question, user: _this2.user, key: question.id });
-        });
+            this.questionRepo = new _questionRepository2.default(this.firebaseRef);
+            this.questionRepo.onReady(function (questions) {
+                _this2.questions = _this2.getQuestionList(questions);
+                _this2.setState({
+                    questions: _this2.questions
+                });
+            });
+            this.questionRepo.onQuestionChange(this.changeQuestion.bind(this));
+            this.questionRepo.onError(this.showError);
+        }
+    }, {
+        key: 'initUser',
+        value: function initUser() {
+            this.user = new _user2.default(this.firebaseRef);
+            this.user.onAuth(this.changeQuestion);
+        }
+    }, {
+        key: 'initUsers',
+        value: function initUsers() {
+            this.usersRepo = new _usersRepository2.default(this.firebaseRef);
+            this.usersRepo.register(this.user);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this3 = this;
 
-        return _react2.default.createElement(
-            'div',
-            { className: 'app-contest', style: this.style },
-            _react2.default.createElement(
+            var questions = this.state.questions;
+            var questionNodes = questions.map(function (question) {
+                return _react2.default.createElement(_question2.default, { question: question, user: _this3.user, key: question.id });
+            });
+
+            return _react2.default.createElement(
                 'div',
-                { className: 'app-contest__slides' },
-                _react2.default.createElement(_logIn2.default, { user: this.user }),
-                _react2.default.createElement(_welcome2.default, { usersRepo: this.usersRepo, user: this.user }),
-                questionNodes
-            )
-        );
-    }
-});
+                { className: 'app-contest', style: this.style },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'app-contest__slides' },
+                    _react2.default.createElement(_logIn2.default, { user: this.user }),
+                    _react2.default.createElement(_welcome2.default, { usersRepo: this.usersRepo, user: this.user }),
+                    questionNodes
+                )
+            );
+        }
+    }]);
+
+    return SlideList;
+}(_react2.default.Component);
 
 exports.default = SlideList;
 
 },{"../components/logIn.js":3,"../components/question.js":4,"../components/welcome.js":8,"../question-repository":9,"../user":10,"../users-repository.js":11,"react":170}],6:[function(require,module,exports){
 "use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -332,23 +436,43 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var UserAvatar = _react2.default.createClass({
-    displayName: "UserAvatar",
-    render: function render() {
-        return _react2.default.createElement(
-            "div",
-            { className: "mint-avatar mint-avatar--small" },
-            _react2.default.createElement("img", { className: "mint-avatar__image js-avatar-image",
-                src: this.props.user.avatar,
-                alt: this.props.user.name })
-        );
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var UserAvatar = function (_React$Component) {
+    _inherits(UserAvatar, _React$Component);
+
+    function UserAvatar() {
+        _classCallCheck(this, UserAvatar);
+
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(UserAvatar).apply(this, arguments));
     }
-});
+
+    _createClass(UserAvatar, [{
+        key: "render",
+        value: function render() {
+            return _react2.default.createElement(
+                "div",
+                { className: "mint-avatar mint-avatar--small" },
+                _react2.default.createElement("img", { className: "mint-avatar__image js-avatar-image",
+                    src: this.props.user.avatar,
+                    alt: this.props.user.name })
+            );
+        }
+    }]);
+
+    return UserAvatar;
+}(_react2.default.Component);
 
 exports.default = UserAvatar;
 
 },{"react":170}],7:[function(require,module,exports){
 'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -364,25 +488,45 @@ var _userAvatar2 = _interopRequireDefault(_userAvatar);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Users = _react2.default.createClass({
-    displayName: 'Users',
-    render: function render() {
-        var userList = this.props.users.map(function (user, index) {
-            return _react2.default.createElement(_userAvatar2.default, { user: user, key: index });
-        });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-        return _react2.default.createElement(
-            'div',
-            null,
-            userList
-        );
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Users = function (_React$Component) {
+    _inherits(Users, _React$Component);
+
+    function Users() {
+        _classCallCheck(this, Users);
+
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(Users).apply(this, arguments));
     }
-});
+
+    _createClass(Users, [{
+        key: 'render',
+        value: function render() {
+            var userList = this.props.users.map(function (user, index) {
+                return _react2.default.createElement(_userAvatar2.default, { user: user, key: index });
+            });
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                userList
+            );
+        }
+    }]);
+
+    return Users;
+}(_react2.default.Component);
 
 exports.default = Users;
 
 },{"../components/userAvatar":6,"react":170}],8:[function(require,module,exports){
 'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -398,58 +542,80 @@ var _users2 = _interopRequireDefault(_users);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Welcome = _react2.default.createClass({
-    displayName: 'Welcome',
-    getInitialState: function getInitialState() {
-        return {
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Welcome = function (_React$Component) {
+    _inherits(Welcome, _React$Component);
+
+    function Welcome() {
+        _classCallCheck(this, Welcome);
+
+        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Welcome).call(this));
+
+        _this.state = {
             users: []
         };
-    },
-    componentWillMount: function componentWillMount() {
-        this.user = this.props.user;
-        this.usersRepo = this.props.usersRepo;
-        this.usersRepo.onUserAdded(this.addUser);
-    },
-    addUser: function addUser() {
-        this.setState({
-            users: this.usersRepo.users
-        });
-    },
-    render: function render() {
-        return _react2.default.createElement(
-            'div',
-            { className: 'app-contest__slide' },
-            _react2.default.createElement(
+        return _this;
+    }
+
+    _createClass(Welcome, [{
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            this.user = this.props.user;
+            this.usersRepo = this.props.usersRepo;
+            this.usersRepo.onUserAdded(this.addUser.bind(this));
+        }
+    }, {
+        key: 'addUser',
+        value: function addUser() {
+            this.setState({
+                users: this.usersRepo.users
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
                 'div',
-                { className: 'app-contest__header' },
-                _react2.default.createElement(
-                    'h1',
-                    { className: 'mint-header-primary' },
-                    'You made it!'
-                )
-            ),
-            _react2.default.createElement(
-                'div',
-                { className: 'app-contest__content' },
+                { className: 'app-contest__slide' },
                 _react2.default.createElement(
                     'div',
-                    { className: 'mint-avatar mint-avatar--xlarge' },
-                    _react2.default.createElement('img', { className: 'mint-avatar__image', src: this.user.avatar })
-                )
-            ),
-            _react2.default.createElement(
-                'div',
-                null,
-                _react2.default.createElement(
-                    'p',
-                    { className: 'mint-text' },
-                    'Who\'s else is in?'
+                    { className: 'app-contest__header' },
+                    _react2.default.createElement(
+                        'h1',
+                        { className: 'mint-header-primary' },
+                        'You made it!'
+                    )
                 ),
-                _react2.default.createElement(_users2.default, { users: this.state.users })
-            )
-        );
-    }
-});
+                _react2.default.createElement(
+                    'div',
+                    { className: 'app-contest__content' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'mint-avatar mint-avatar--xlarge' },
+                        _react2.default.createElement('img', { className: 'mint-avatar__image', src: this.user.avatar })
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                        'p',
+                        { className: 'mint-text' },
+                        'Who\'s else is in?'
+                    ),
+                    _react2.default.createElement(_users2.default, { users: this.state.users })
+                )
+            );
+        }
+    }]);
+
+    return Welcome;
+}(_react2.default.Component);
 
 exports.default = Welcome;
 

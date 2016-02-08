@@ -2,7 +2,7 @@ import React from 'react';
 import UserAvatar from '../components/userAvatar';
 
 
-const Users = React.createClass({
+class Users extends React.Component {
     render() {
         const userList = this.props.users.map((user, index) => {
             return (
@@ -16,6 +16,6 @@ const Users = React.createClass({
             </div>
         )
     }
-});
+}
 
 export default Users;
