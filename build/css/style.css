@@ -24,6 +24,10 @@ body {
   .app-contest__content {
     margin-bottom: 24px;
     text-align: center; }
+  .app-contest__slides {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex; }
   .app-contest__slide {
     width: 100vw;
     -webkit-flex-shrink: 0;
@@ -32,8 +36,6 @@ body {
     padding: 45px 30px 30px; }
   .app-contest__action {
     margin-top: 48px; }
-  .app-contest .mint-label__text {
-    color: #ffffff; }
   .app-contest .mint-label__icon {
     -webkit-align-items: center;
     -ms-flex-align: center;
