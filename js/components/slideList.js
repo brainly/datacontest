@@ -1,9 +1,10 @@
 import React from 'react';
-import Question from '../components/question.js';
-import LogIn from '../components/logIn.js';
-import Welcome from '../components/welcome.js';
+import Question from '../components/question';
+import LogIn from '../components/logIn';
+import Welcome from '../components/welcome';
 import QuestionRepository from '../question-repository';
-import UsersRepository from '../users-repository.js';
+import UsersRepository from '../users-repository';
+import VotesRepository from '../votes-repository';
 import User from '../user';
 
 class SlideList extends React.Component{
@@ -21,6 +22,7 @@ class SlideList extends React.Component{
         this.initQuestionRepository();
         this.initUser();
         this.initUsers();
+        this.initVotesRepository();
     }
 
     getQuestionList(questions) {
@@ -67,7 +69,7 @@ class SlideList extends React.Component{
 
     initUser() {
         this.user = new User(this.firebaseRef);
-        this.user.onAuth(this.changeQuestion);
+        this.user.onAuth(this.changeQuestion.bind(this));
     }
 
     initUsers() {
@@ -75,11 +77,15 @@ class SlideList extends React.Component{
         this.usersRepo.register(this.user);
     }
 
+    initVotesRepository() {
+        this.votesRepo = new VotesRepository(this.firebaseRef, this.user.id);
+    }
+
     render() {
         const questions = this.state.questions;
         const questionNodes = questions.map((question) => {
             return (
-                <Question question={question} user={this.user} key={question.id}/>
+                <Question question={question} user={this.user} votes={this.votesRepo}key={question.id}/>
             );
         });
 

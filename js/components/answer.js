@@ -1,9 +1,9 @@
 import React from 'react';
-import VotesRepository from '../votes-repository';
 
 class Answer extends React.Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props);
+        this.votesRepo = props.votes;
     }
 
     handleChange() {
@@ -12,7 +12,6 @@ class Answer extends React.Component {
 
     componentWillMount() {
         this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
-        this.votesRepo = new VotesRepository(this.firebaseRef, this.props.user.id);
     }
 
     render() {
