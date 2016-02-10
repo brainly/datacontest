@@ -3,10 +3,11 @@ import Answer from '../components/answer.js';
 
 class Question extends React.Component {
     render() {
+        const votes = this.props.votes;
         const question = this.props.question;
         const answerNodes = question.answers.map((answer)  => {
             return (
-                <Answer answer={answer} questionId={question.id} user={this.props.user} key={answer.id}/>
+                <Answer answer={answer} questionId={question.id} user={this.props.user} votes={votes} key={answer.id}/>
             );
         });
 

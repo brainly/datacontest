@@ -34,10 +34,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _votesRepository = require('../votes-repository');
-
-var _votesRepository2 = _interopRequireDefault(_votesRepository);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -49,22 +45,29 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Answer = function (_React$Component) {
     _inherits(Answer, _React$Component);
 
-    function Answer() {
+    function Answer(props) {
         _classCallCheck(this, Answer);
 
-        return _possibleConstructorReturn(this, Object.getPrototypeOf(Answer).call(this));
+        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Answer).call(this, props));
+
+        _this.votesRepo = props.votes;
+        return _this;
     }
 
     _createClass(Answer, [{
         key: 'handleChange',
         value: function handleChange() {
+            var _this2 = this;
+
             this.votesRepo.vote(this.questionId, this.answerId);
+            this.votesRepo.onVotesChange(this.questionId, function () {
+                console.log('thanks for voting: ', _this2.votesRepo);
+            });
         }
     }, {
         key: 'componentWillMount',
         value: function componentWillMount() {
             this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
-            this.votesRepo = new _votesRepository2.default(this.firebaseRef, this.props.user.id);
         }
     }, {
         key: 'render',
@@ -109,7 +112,7 @@ var Answer = function (_React$Component) {
 
 exports.default = Answer;
 
-},{"../votes-repository":12,"react":170}],3:[function(require,module,exports){
+},{"react":170}],3:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -231,9 +234,10 @@ var Question = function (_React$Component) {
         value: function render() {
             var _this2 = this;
 
+            var votes = this.props.votes;
             var question = this.props.question;
             var answerNodes = question.answers.map(function (answer) {
-                return _react2.default.createElement(_answer2.default, { answer: answer, questionId: question.id, user: _this2.props.user, key: answer.id });
+                return _react2.default.createElement(_answer2.default, { answer: answer, questionId: question.id, user: _this2.props.user, votes: votes, key: answer.id });
             });
 
             return _react2.default.createElement(
@@ -275,15 +279,15 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _question = require('../components/question.js');
+var _question = require('../components/question');
 
 var _question2 = _interopRequireDefault(_question);
 
-var _logIn = require('../components/logIn.js');
+var _logIn = require('../components/logIn');
 
 var _logIn2 = _interopRequireDefault(_logIn);
 
-var _welcome = require('../components/welcome.js');
+var _welcome = require('../components/welcome');
 
 var _welcome2 = _interopRequireDefault(_welcome);
 
@@ -291,9 +295,13 @@ var _questionRepository = require('../question-repository');
 
 var _questionRepository2 = _interopRequireDefault(_questionRepository);
 
-var _usersRepository = require('../users-repository.js');
+var _usersRepository = require('../users-repository');
 
 var _usersRepository2 = _interopRequireDefault(_usersRepository);
+
+var _votesRepository = require('../votes-repository');
+
+var _votesRepository2 = _interopRequireDefault(_votesRepository);
 
 var _user = require('../user');
 
@@ -329,6 +337,10 @@ var SlideList = function (_React$Component) {
             this.initQuestionRepository();
             this.initUser();
             this.initUsers();
+            this.initVotesRepository();
+
+            console.log('1', this.questionRepo);
+            console.log('2', this.usersRepo);
         }
     }, {
         key: 'getQuestionList',
@@ -384,7 +396,7 @@ var SlideList = function (_React$Component) {
         key: 'initUser',
         value: function initUser() {
             this.user = new _user2.default(this.firebaseRef);
-            this.user.onAuth(this.changeQuestion);
+            this.user.onAuth(this.changeQuestion.bind(this));
         }
     }, {
         key: 'initUsers',
@@ -393,13 +405,18 @@ var SlideList = function (_React$Component) {
             this.usersRepo.register(this.user);
         }
     }, {
+        key: 'initVotesRepository',
+        value: function initVotesRepository() {
+            this.votesRepo = new _votesRepository2.default(this.firebaseRef, this.user.id);
+        }
+    }, {
         key: 'render',
         value: function render() {
             var _this3 = this;
 
             var questions = this.state.questions;
             var questionNodes = questions.map(function (question) {
-                return _react2.default.createElement(_question2.default, { question: question, user: _this3.user, key: question.id });
+                return _react2.default.createElement(_question2.default, { question: question, user: _this3.user, votes: _this3.votesRepo, key: question.id });
             });
 
             return _react2.default.createElement(
@@ -421,7 +438,7 @@ var SlideList = function (_React$Component) {
 
 exports.default = SlideList;
 
-},{"../components/logIn.js":3,"../components/question.js":4,"../components/welcome.js":8,"../question-repository":9,"../user":10,"../users-repository.js":11,"react":170}],6:[function(require,module,exports){
+},{"../components/logIn":3,"../components/question":4,"../components/welcome":8,"../question-repository":9,"../user":10,"../users-repository":11,"../votes-repository":12,"react":170}],6:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
