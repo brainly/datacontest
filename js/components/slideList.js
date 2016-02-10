@@ -1,7 +1,9 @@
 import React from 'react';
+
 import Question from '../components/question';
 import LogIn from '../components/logIn';
 import Welcome from '../components/welcome';
+import Results from '../components/results';
 import QuestionRepository from '../question-repository';
 import UsersRepository from '../users-repository';
 import VotesRepository from '../votes-repository';
@@ -30,12 +32,12 @@ class SlideList extends React.Component{
         return questions.map((question, index) => {
             const answerList = question.answers.map((answer, index) => {
                 return {
-                    id: index + 1,
+                    id: index,
                     text: answer
                 };
             });
             return {
-                id: index + 1,
+                id: index,
                 text : question.text,
                 answers : answerList
             };
@@ -106,6 +108,7 @@ class SlideList extends React.Component{
                     <LogIn user={this.user}/>
                     <Welcome usersRepo={this.usersRepo} user={this.user} />
                     {questionNodes}
+                    <Results />
                 </div>
             </div>
         )
