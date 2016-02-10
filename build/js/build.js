@@ -22,7 +22,7 @@ function start() {
 start();
 
 },{"./components/slideList.js":5,"react":170,"react-dom":41}],2:[function(require,module,exports){
-'use strict';
+"use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -30,7 +30,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _react = require('react');
+var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -55,49 +55,44 @@ var Answer = function (_React$Component) {
     }
 
     _createClass(Answer, [{
-        key: 'handleChange',
+        key: "handleChange",
         value: function handleChange() {
-            var _this2 = this;
-
             this.votesRepo.vote(this.questionId, this.answerId);
-            this.votesRepo.onVotesChange(this.questionId, function () {
-                console.log('thanks for voting: ', _this2.votesRepo);
-            });
         }
     }, {
-        key: 'componentWillMount',
+        key: "componentWillMount",
         value: function componentWillMount() {}
     }, {
-        key: 'render',
+        key: "render",
         value: function render() {
             this.questionId = this.props.questionId;
             this.answerId = this.props.answer.id;
 
-            var inputId = 'answer-' + this.questionId + '-' + this.answerId;
+            var inputId = "answer-" + this.questionId + "-" + this.answerId;
 
             return _react2.default.createElement(
-                'div',
-                { className: 'answer' },
+                "div",
+                { className: "answer" },
                 _react2.default.createElement(
-                    'div',
-                    { className: 'mint-label mint-label--large mint-label--emphasised mint-label--secondary' },
+                    "div",
+                    { className: "mint-label mint-label--large mint-label--emphasised mint-label--secondary" },
                     _react2.default.createElement(
-                        'div',
-                        { className: 'mint-label__icon' },
+                        "div",
+                        { className: "mint-label__icon" },
                         _react2.default.createElement(
-                            'div',
-                            { className: 'mint-radio' },
-                            _react2.default.createElement('input', { id: inputId,
-                                className: 'mint-radio__element',
-                                name: 'answer',
-                                type: 'radio',
+                            "div",
+                            { className: "mint-radio" },
+                            _react2.default.createElement("input", { id: inputId,
+                                className: "mint-radio__element",
+                                name: "answer",
+                                type: "radio",
                                 onChange: this.handleChange.bind(this) }),
-                            _react2.default.createElement('label', { className: 'mint-radio__ghost', htmlFor: inputId })
+                            _react2.default.createElement("label", { className: "mint-radio__ghost", htmlFor: inputId })
                         )
                     ),
                     _react2.default.createElement(
-                        'label',
-                        { className: 'mint-label__text', htmlFor: inputId },
+                        "label",
+                        { className: "mint-label__text", htmlFor: inputId },
                         this.props.answer.text
                     )
                 )

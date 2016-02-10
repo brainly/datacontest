@@ -8,9 +8,6 @@ class Answer extends React.Component {
 
     handleChange() {
         this.votesRepo.vote(this.questionId, this.answerId);
-        this.votesRepo.onVotesChange(this.questionId, () => {
-            console.log('thanks for voting: ', this.votesRepo);
-        });
     }
 
     componentWillMount() {
