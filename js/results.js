@@ -25,7 +25,7 @@ function showResults() {
     for(var questionId in questions) {
         var correct = questions[questionId].correct;
 
-        if(votes[questionId]) {
+        if(votes && votes[questionId]) {
             for(var userId in votes[questionId]) {
 
                 if(votes[questionId][userId] == correct) {
