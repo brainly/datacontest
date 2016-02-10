@@ -7,6 +7,8 @@ class VotesRepository {
             'error': []
         };
         this.votes = {};
+
+        console.log('construct');
     }
 
     vote(questionId, answerId) {

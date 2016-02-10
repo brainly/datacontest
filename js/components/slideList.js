@@ -19,9 +19,10 @@ class SlideList extends React.Component{
 
     componentWillMount() {
         this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
+
         this.initQuestionRepository();
-        this.initUser();
         this.initUsers();
+        this.initUser();
         this.initVotesRepository();
     }
 
@@ -43,12 +44,16 @@ class SlideList extends React.Component{
 
     changeQuestion(questionIndex = 0) {
         const slideIndex = parseInt(questionIndex, 10) + 2;
+        this.goToSlide(slideIndex);
+    }
+
+    goToSlide(slide = 0) {
+        const slideIndex = parseInt(slide, 10);
         this.style = {
             left: -(slideIndex * 100) + 'vw'
         };
 
         this.setState({
-            questions: this.questions,
             slideIndex: slideIndex
         });
     }
@@ -69,12 +74,18 @@ class SlideList extends React.Component{
 
     initUser() {
         this.user = new User(this.firebaseRef);
-        this.user.onAuth(this.changeQuestion.bind(this));
+        this.user.onAuth(() => {
+            if(this.user.isAuthenticated()) {
+                this.changeQuestion(0);
+                this.usersRepo.register(this.user);
+            } else {
+                this.goToSlide(0);
+            }
+        });
     }
 
     initUsers() {
         this.usersRepo = new UsersRepository(this.firebaseRef);
-        this.usersRepo.register(this.user);
     }
 
     initVotesRepository() {
@@ -88,7 +99,6 @@ class SlideList extends React.Component{
                 <Question question={question} user={this.user} votes={this.votesRepo}key={question.id}/>
             );
         });
-
 
         return (
             <div className="app-contest" style={this.style}>

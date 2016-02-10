@@ -14,7 +14,6 @@ class Answer extends React.Component {
     }
 
     componentWillMount() {
-        this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
     }
 
     render() {

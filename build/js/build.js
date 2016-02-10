@@ -66,9 +66,7 @@ var Answer = function (_React$Component) {
         }
     }, {
         key: 'componentWillMount',
-        value: function componentWillMount() {
-            this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
-        }
+        value: function componentWillMount() {}
     }, {
         key: 'render',
         value: function render() {
@@ -334,13 +332,11 @@ var SlideList = function (_React$Component) {
         key: 'componentWillMount',
         value: function componentWillMount() {
             this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
-            this.initQuestionRepository();
-            this.initUser();
-            this.initUsers();
-            this.initVotesRepository();
 
-            console.log('1', this.questionRepo);
-            console.log('2', this.usersRepo);
+            this.initQuestionRepository();
+            this.initUsers();
+            this.initUser();
+            this.initVotesRepository();
         }
     }, {
         key: 'getQuestionList',
@@ -365,12 +361,19 @@ var SlideList = function (_React$Component) {
             var questionIndex = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
 
             var slideIndex = parseInt(questionIndex, 10) + 2;
+            this.goToSlide(slideIndex);
+        }
+    }, {
+        key: 'goToSlide',
+        value: function goToSlide() {
+            var slide = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+
+            var slideIndex = parseInt(slide, 10);
             this.style = {
                 left: -(slideIndex * 100) + 'vw'
             };
 
             this.setState({
-                questions: this.questions,
                 slideIndex: slideIndex
             });
         }
@@ -395,14 +398,22 @@ var SlideList = function (_React$Component) {
     }, {
         key: 'initUser',
         value: function initUser() {
+            var _this3 = this;
+
             this.user = new _user2.default(this.firebaseRef);
-            this.user.onAuth(this.changeQuestion.bind(this));
+            this.user.onAuth(function () {
+                if (_this3.user.isAuthenticated()) {
+                    _this3.changeQuestion(0);
+                    _this3.usersRepo.register(_this3.user);
+                } else {
+                    _this3.goToSlide(0);
+                }
+            });
         }
     }, {
         key: 'initUsers',
         value: function initUsers() {
             this.usersRepo = new _usersRepository2.default(this.firebaseRef);
-            this.usersRepo.register(this.user);
         }
     }, {
         key: 'initVotesRepository',
@@ -412,11 +423,11 @@ var SlideList = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this3 = this;
+            var _this4 = this;
 
             var questions = this.state.questions;
             var questionNodes = questions.map(function (question) {
-                return _react2.default.createElement(_question2.default, { question: question, user: _this3.user, votes: _this3.votesRepo, key: question.id });
+                return _react2.default.createElement(_question2.default, { question: question, user: _this4.user, votes: _this4.votesRepo, key: question.id });
             });
 
             return _react2.default.createElement(
@@ -895,6 +906,8 @@ var VotesRepository = function () {
             'error': []
         };
         this.votes = {};
+
+        console.log('construct');
     }
 
     _createClass(VotesRepository, [{
