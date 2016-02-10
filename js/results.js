@@ -25,18 +25,20 @@ function showResults() {
     for(var questionId in questions) {
         var correct = questions[questionId].correct;
 
-        for(var userId in votes[questionId]) {
+        if(votes[questionId]) {
+            for(var userId in votes[questionId]) {
 
-            if(votes[questionId][userId] == correct) {
-                console.log('correct!', userId, questionId);
-                results[userId] = results[userId] ? results[userId] + 1 : 1;
+                if(votes[questionId][userId] == correct) {
+                    console.log('correct!', userId, questionId);
+                    results[userId] = results[userId] ? results[userId] + 1 : 1;
+                }
             }
         }
     }
 
     var resultsArr = [];
     for(var userId in results) {
-        if(results.hasOwnProperty(userId)) {
+        if(results.hasOwnProperty(userId) && users[userId]) {
             resultsArr.push({
                 user: users[userId],
                 score: results[userId]
