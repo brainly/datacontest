@@ -22,6 +22,8 @@ fb.child('users/').on('value', data => {
 });
 
 function showResults() {
+    results = {};
+
     for(var questionId in questions) {
         var correct = questions[questionId].correct;
 
