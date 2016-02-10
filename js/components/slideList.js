@@ -23,6 +23,10 @@ class SlideList extends React.Component{
         this.initUser();
         this.initUsers();
         this.initVotesRepository();
+
+        console.log('1',this.questionRepo);
+        console.log('2', this.usersRepo);
+
     }
 
     getQuestionList(questions) {

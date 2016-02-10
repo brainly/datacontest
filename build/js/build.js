@@ -57,7 +57,12 @@ var Answer = function (_React$Component) {
     _createClass(Answer, [{
         key: "handleChange",
         value: function handleChange() {
+            var _this2 = this;
+
             this.votesRepo.vote(this.questionId, this.answerId);
+            this.votesRepo.onVotesChange(this.questionId, function () {
+                console.log(_this2.votesRepo);
+            });
         }
     }, {
         key: "componentWillMount",
@@ -333,6 +338,9 @@ var SlideList = function (_React$Component) {
             this.initUser();
             this.initUsers();
             this.initVotesRepository();
+
+            console.log('1', this.questionRepo);
+            console.log('2', this.usersRepo);
         }
     }, {
         key: 'getQuestionList',
