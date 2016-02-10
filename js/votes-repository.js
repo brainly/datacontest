@@ -1,7 +1,6 @@
 class VotesRepository {
-    constructor(firebase, userId) {
+    constructor(firebase) {
         this.firebase = firebase;
-        this.userId = userId;
         this._listeners = {
             'votes-change': [],
             'error': []
@@ -11,9 +10,14 @@ class VotesRepository {
         console.log('construct');
     }
 
-    vote(questionId, answerId) {
-        let votesRef = (this.firebase).child(`votes/${questionId}/${this.userId}`);
-        votesRef.set(answerId);
+    vote(userId, questionId, answerId) {
+        let votesRef = (this.firebase).child(`votes/${questionId}/${userId}`);
+        votesRef.set(answerId, (error) => {
+            if(error) {
+                //TODO add error handling
+                alert('We are unable to process your vote :( ' + error);
+            }
+        });
     }
 
     _trigger(action, data) {

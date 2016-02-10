@@ -22,10 +22,11 @@ class SlideList extends React.Component{
     componentWillMount() {
         this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
 
-        this.initQuestionRepository();
-        this.initUsers();
         this.initUser();
-        this.initVotesRepository();
+
+        this.usersRepo = new UsersRepository(this.firebaseRef);
+        this.votesRepo = new VotesRepository(this.firebaseRef);
+        this.initQuestionRepository();
     }
 
     getQuestionList(questions) {
@@ -84,14 +85,6 @@ class SlideList extends React.Component{
                 this.goToSlide(0);
             }
         });
-    }
-
-    initUsers() {
-        this.usersRepo = new UsersRepository(this.firebaseRef);
-    }
-
-    initVotesRepository() {
-        this.votesRepo = new VotesRepository(this.firebaseRef, this.user.id);
     }
 
     render() {

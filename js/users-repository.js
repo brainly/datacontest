@@ -1,6 +1,5 @@
 class UsersRepository {
-    constructor(firebase, userId) {
-        this.userId = userId;
+    constructor(firebase) {
         this.firebase = firebase;
         this._listeners = {
             'user-added': [],

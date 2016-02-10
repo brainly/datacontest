@@ -4,10 +4,11 @@ class Answer extends React.Component {
     constructor(props) {
         super(props);
         this.votesRepo = props.votes;
+        this.user = props.user;
     }
 
     handleChange() {
-        this.votesRepo.vote(this.questionId, this.answerId);
+        this.votesRepo.vote(this.user.id, this.questionId, this.answerId);
     }
 
     componentWillMount() {

@@ -51,13 +51,14 @@ var Answer = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Answer).call(this, props));
 
         _this.votesRepo = props.votes;
+        _this.user = props.user;
         return _this;
     }
 
     _createClass(Answer, [{
         key: "handleChange",
         value: function handleChange() {
-            this.votesRepo.vote(this.questionId, this.answerId);
+            this.votesRepo.vote(this.user.id, this.questionId, this.answerId);
         }
     }, {
         key: "componentWillMount",
@@ -386,10 +387,11 @@ var SlideList = function (_React$Component) {
         value: function componentWillMount() {
             this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
 
-            this.initQuestionRepository();
-            this.initUsers();
             this.initUser();
-            this.initVotesRepository();
+
+            this.usersRepo = new _usersRepository2.default(this.firebaseRef);
+            this.votesRepo = new _votesRepository2.default(this.firebaseRef);
+            this.initQuestionRepository();
         }
     }, {
         key: 'getQuestionList',
@@ -462,16 +464,6 @@ var SlideList = function (_React$Component) {
                     _this3.goToSlide(0);
                 }
             });
-        }
-    }, {
-        key: 'initUsers',
-        value: function initUsers() {
-            this.usersRepo = new _usersRepository2.default(this.firebaseRef);
-        }
-    }, {
-        key: 'initVotesRepository',
-        value: function initVotesRepository() {
-            this.votesRepo = new _votesRepository2.default(this.firebaseRef, this.user.id);
         }
     }, {
         key: 'render',
@@ -861,12 +853,11 @@ Object.defineProperty(exports, "__esModule", {
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var UsersRepository = function () {
-    function UsersRepository(firebase, userId) {
+    function UsersRepository(firebase) {
         var _this = this;
 
         _classCallCheck(this, UsersRepository);
 
-        this.userId = userId;
         this.firebase = firebase;
         this._listeners = {
             'user-added': [],
@@ -950,11 +941,10 @@ Object.defineProperty(exports, "__esModule", {
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var VotesRepository = function () {
-    function VotesRepository(firebase, userId) {
+    function VotesRepository(firebase) {
         _classCallCheck(this, VotesRepository);
 
         this.firebase = firebase;
-        this.userId = userId;
         this._listeners = {
             'votes-change': [],
             'error': []
@@ -966,9 +956,14 @@ var VotesRepository = function () {
 
     _createClass(VotesRepository, [{
         key: 'vote',
-        value: function vote(questionId, answerId) {
-            var votesRef = this.firebase.child('votes/' + questionId + '/' + this.userId);
-            votesRef.set(answerId);
+        value: function vote(userId, questionId, answerId) {
+            var votesRef = this.firebase.child('votes/' + questionId + '/' + userId);
+            votesRef.set(answerId, function (error) {
+                if (error) {
+                    //TODO add error handling
+                    alert('We are unable to process your vote :( ' + error);
+                }
+            });
         }
     }, {
         key: '_trigger',
