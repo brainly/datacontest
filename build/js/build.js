@@ -24,8 +24,6 @@ start();
 },{"./components/slideList.js":6,"react":171,"react-dom":42}],2:[function(require,module,exports){
 "use strict";
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -36,81 +34,46 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var Answer = function Answer(props) {
+    var handleChange = function handleChange() {
+        return props.votes.vote(props.user.id, props.questionId, props.answer.id);
+    };
+    var inputId = "answer-" + props.questionId + "-" + props.answer.id;
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Answer = function (_React$Component) {
-    _inherits(Answer, _React$Component);
-
-    function Answer(props) {
-        _classCallCheck(this, Answer);
-
-        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Answer).call(this, props));
-
-        _this.votesRepo = props.votes;
-        _this.user = props.user;
-        return _this;
-    }
-
-    _createClass(Answer, [{
-        key: "handleChange",
-        value: function handleChange() {
-            this.votesRepo.vote(this.user.id, this.questionId, this.answerId);
-        }
-    }, {
-        key: "componentWillMount",
-        value: function componentWillMount() {}
-    }, {
-        key: "render",
-        value: function render() {
-            this.questionId = this.props.questionId;
-            this.answerId = this.props.answer.id;
-
-            var inputId = "answer-" + this.questionId + "-" + this.answerId;
-
-            return _react2.default.createElement(
+    return _react2.default.createElement(
+        "div",
+        { className: "answer" },
+        _react2.default.createElement(
+            "div",
+            { className: "mint-label mint-label--large mint-label--emphasised mint-label--secondary" },
+            _react2.default.createElement(
                 "div",
-                { className: "answer" },
+                { className: "mint-label__icon" },
                 _react2.default.createElement(
                     "div",
-                    { className: "mint-label mint-label--large mint-label--emphasised mint-label--secondary" },
-                    _react2.default.createElement(
-                        "div",
-                        { className: "mint-label__icon" },
-                        _react2.default.createElement(
-                            "div",
-                            { className: "mint-radio" },
-                            _react2.default.createElement("input", { id: inputId,
-                                className: "mint-radio__element",
-                                name: "answer",
-                                type: "radio",
-                                onChange: this.handleChange.bind(this) }),
-                            _react2.default.createElement("label", { className: "mint-radio__ghost", htmlFor: inputId })
-                        )
-                    ),
-                    _react2.default.createElement(
-                        "label",
-                        { className: "mint-label__text", htmlFor: inputId },
-                        this.props.answer.text
-                    )
+                    { className: "mint-radio" },
+                    _react2.default.createElement("input", { id: inputId,
+                        className: "mint-radio__element",
+                        name: "answer",
+                        type: "radio",
+                        onChange: handleChange }),
+                    _react2.default.createElement("label", { className: "mint-radio__ghost", htmlFor: inputId })
                 )
-            );
-        }
-    }]);
-
-    return Answer;
-}(_react2.default.Component);
+            ),
+            _react2.default.createElement(
+                "label",
+                { className: "mint-label__text", htmlFor: inputId },
+                props.answer.text
+            )
+        )
+    );
+};
 
 exports.default = Answer;
 
 },{"react":171}],3:[function(require,module,exports){
 "use strict";
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -121,78 +84,50 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var LogIn = function (_React$Component) {
-    _inherits(LogIn, _React$Component);
-
-    function LogIn() {
-        _classCallCheck(this, LogIn);
-
-        return _possibleConstructorReturn(this, Object.getPrototypeOf(LogIn).apply(this, arguments));
-    }
-
-    _createClass(LogIn, [{
-        key: "handleClick",
-        value: function handleClick() {
-            this.props.user.authenticate();
-        }
-    }, {
-        key: "render",
-        value: function render() {
-            return _react2.default.createElement(
-                "div",
-                { className: "app-contest__slide" },
+var LogIn = function LogIn(props) {
+    return _react2.default.createElement(
+        "div",
+        { className: "app-contest__slide" },
+        _react2.default.createElement(
+            "div",
+            { className: "app-contest__header" },
+            _react2.default.createElement(
+                "h1",
+                { className: "mint-text-bit" },
+                _react2.default.createElement(
+                    "span",
+                    { className: "mint-text-bit__hole" },
+                    _react2.default.createElement("div", { className: "mint-logo mint-logo--small" })
+                ),
+                "Data Contest"
+            )
+        ),
+        _react2.default.createElement(
+            "p",
+            { className: "mint-text" },
+            "Do you like contests? Do you enjoy getting prizes? This thing might be for you."
+        ),
+        _react2.default.createElement(
+            "div",
+            { className: "app-contest__action js-log-in" },
+            _react2.default.createElement(
+                "a",
+                { className: "mint-button-primary mint-button-primary--full",
+                    onClick: props.handleClick },
                 _react2.default.createElement(
                     "div",
-                    { className: "app-contest__header" },
-                    _react2.default.createElement(
-                        "h1",
-                        { className: "mint-text-bit" },
-                        _react2.default.createElement(
-                            "span",
-                            { className: "mint-text-bit__hole" },
-                            _react2.default.createElement("div", { className: "mint-logo mint-logo--small" })
-                        ),
-                        "Data Contest"
-                    )
-                ),
-                _react2.default.createElement(
-                    "p",
-                    { className: "mint-text" },
-                    "Do you like contests? Do you enjoy getting prizes? This thing might be for you."
-                ),
-                _react2.default.createElement(
-                    "div",
-                    { className: "app-contest__action js-log-in" },
-                    _react2.default.createElement(
-                        "a",
-                        { className: "mint-button-primary mint-button-primary--full",
-                            onClick: this.handleClick.bind(this) },
-                        _react2.default.createElement(
-                            "div",
-                            { className: "mint-button-primary__hole" },
-                            "Join the fun!"
-                        )
-                    )
+                    { className: "mint-button-primary__hole" },
+                    "Join the fun!"
                 )
-            );
-        }
-    }]);
-
-    return LogIn;
-}(_react2.default.Component);
+            )
+        )
+    );
+};
 
 exports.default = LogIn;
 
 },{"react":171}],4:[function(require,module,exports){
 'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -208,62 +143,36 @@ var _answer2 = _interopRequireDefault(_answer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var Question = function Question(props) {
+    var votes = props.votes;
+    var question = props.question;
+    var answerNodes = question.answers.map(function (answer) {
+        return _react2.default.createElement(_answer2.default, { answer: answer, questionId: question.id, user: props.user, votes: votes, key: answer.id });
+    });
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Question = function (_React$Component) {
-    _inherits(Question, _React$Component);
-
-    function Question() {
-        _classCallCheck(this, Question);
-
-        return _possibleConstructorReturn(this, Object.getPrototypeOf(Question).apply(this, arguments));
-    }
-
-    _createClass(Question, [{
-        key: 'render',
-        value: function render() {
-            var _this2 = this;
-
-            var votes = this.props.votes;
-            var question = this.props.question;
-            var answerNodes = question.answers.map(function (answer) {
-                return _react2.default.createElement(_answer2.default, { answer: answer, questionId: question.id, user: _this2.props.user, votes: votes, key: answer.id });
-            });
-
-            return _react2.default.createElement(
+    return _react2.default.createElement(
+        'div',
+        { className: 'app-contest__slide' },
+        _react2.default.createElement(
+            'div',
+            { className: 'app-contest__question' },
+            _react2.default.createElement(
+                'h1',
+                { className: 'mint-header-secondary' },
+                props.question.text
+            ),
+            _react2.default.createElement(
                 'div',
-                { className: 'app-contest__slide' },
-                _react2.default.createElement(
-                    'div',
-                    { className: 'app-contest__question' },
-                    _react2.default.createElement(
-                        'h1',
-                        { className: 'mint-header-secondary' },
-                        this.props.question.text
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        { className: 'app-content_answers' },
-                        answerNodes
-                    )
-                )
-            );
-        }
-    }]);
-
-    return Question;
-}(_react2.default.Component);
-
+                { className: 'app-content_answers' },
+                answerNodes
+            )
+        )
+    );
+};
 exports.default = Question;
 
 },{"../components/answer.js":2,"react":171}],5:[function(require,module,exports){
 "use strict";
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -275,42 +184,21 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Results = function (_React$Component) {
-    _inherits(Results, _React$Component);
-
-    function Results() {
-        _classCallCheck(this, Results);
-
-        return _possibleConstructorReturn(this, Object.getPrototypeOf(Results).apply(this, arguments));
-    }
-
-    _createClass(Results, [{
-        key: "render",
-        value: function render() {
-            return _react2.default.createElement(
-                "div",
-                { className: "app-contest__slide" },
-                _react2.default.createElement(
-                    "div",
-                    { className: "app-contest__header" },
-                    _react2.default.createElement(
-                        "h1",
-                        { className: "mint-text-bit mint-text-bit--not-responsive mint-text-bit--xlarge" },
-                        "Thank you for voting!"
-                    )
-                )
-            );
-        }
-    }]);
-
-    return Results;
-}(_react2.default.Component);
+var Results = function Results() {
+    return _react2.default.createElement(
+        "div",
+        { className: "app-contest__slide" },
+        _react2.default.createElement(
+            "div",
+            { className: "app-contest__header" },
+            _react2.default.createElement(
+                "h1",
+                { className: "mint-text-bit mint-text-bit--not-responsive mint-text-bit--xlarge" },
+                "Thank you for voting!"
+            )
+        )
+    );
+};
 
 exports.default = Results;
 
@@ -377,19 +265,19 @@ var SlideList = function (_React$Component) {
 
         _this.state = {
             questions: [],
+            users: [],
             slideIndex: 0
         };
+
+        _this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
         return _this;
     }
 
     _createClass(SlideList, [{
         key: 'componentWillMount',
         value: function componentWillMount() {
-            this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
-
             this.initUser();
-
-            this.usersRepo = new _usersRepository2.default(this.firebaseRef);
+            this.initUsers();
             this.votesRepo = new _votesRepository2.default(this.firebaseRef);
             this.initQuestionRepository();
         }
@@ -403,6 +291,7 @@ var SlideList = function (_React$Component) {
                         text: answer
                     };
                 });
+
                 return {
                     id: index,
                     text: question.text,
@@ -466,13 +355,28 @@ var SlideList = function (_React$Component) {
             });
         }
     }, {
+        key: 'initUsers',
+        value: function initUsers() {
+            var _this4 = this;
+
+            this.usersRepo = new _usersRepository2.default(this.firebaseRef);
+            this.usersRepo.onUserAdded(function () {
+                _this4.setState({ users: _this4.usersRepo.users });
+            });
+        }
+    }, {
+        key: 'handleLoginClick',
+        value: function handleLoginClick() {
+            this.user.authenticate();
+        }
+    }, {
         key: 'render',
         value: function render() {
-            var _this4 = this;
+            var _this5 = this;
 
             var questions = this.state.questions;
             var questionNodes = questions.map(function (question) {
-                return _react2.default.createElement(_question2.default, { question: question, user: _this4.user, votes: _this4.votesRepo, key: question.id });
+                return _react2.default.createElement(_question2.default, { question: question, user: _this5.user, votes: _this5.votesRepo, key: question.id });
             });
 
             return _react2.default.createElement(
@@ -481,8 +385,8 @@ var SlideList = function (_React$Component) {
                 _react2.default.createElement(
                     'div',
                     { className: 'app-contest__slides' },
-                    _react2.default.createElement(_logIn2.default, { user: this.user }),
-                    _react2.default.createElement(_welcome2.default, { usersRepo: this.usersRepo, user: this.user }),
+                    _react2.default.createElement(_logIn2.default, { handleClick: this.handleLoginClick.bind(this) }),
+                    _react2.default.createElement(_welcome2.default, { users: this.state.users, user: this.user }),
                     questionNodes,
                     _react2.default.createElement(_results2.default, null)
                 )
@@ -498,8 +402,6 @@ exports.default = SlideList;
 },{"../components/logIn":3,"../components/question":4,"../components/results":5,"../components/welcome":9,"../question-repository":10,"../user":11,"../users-repository":12,"../votes-repository":13,"react":171}],7:[function(require,module,exports){
 "use strict";
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -510,43 +412,20 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var UserAvatar = function (_React$Component) {
-    _inherits(UserAvatar, _React$Component);
-
-    function UserAvatar() {
-        _classCallCheck(this, UserAvatar);
-
-        return _possibleConstructorReturn(this, Object.getPrototypeOf(UserAvatar).apply(this, arguments));
-    }
-
-    _createClass(UserAvatar, [{
-        key: "render",
-        value: function render() {
-            return _react2.default.createElement(
-                "div",
-                { className: "mint-avatar mint-avatar--small" },
-                _react2.default.createElement("img", { className: "mint-avatar__image js-avatar-image",
-                    src: this.props.user.avatar,
-                    alt: this.props.user.name })
-            );
-        }
-    }]);
-
-    return UserAvatar;
-}(_react2.default.Component);
+var UserAvatar = function UserAvatar(props) {
+    return _react2.default.createElement(
+        "div",
+        { className: "mint-avatar mint-avatar--small" },
+        _react2.default.createElement("img", { className: "mint-avatar__image js-avatar-image",
+            src: props.user.avatar,
+            alt: props.user.name })
+    );
+};
 
 exports.default = UserAvatar;
 
 },{"react":171}],8:[function(require,module,exports){
 'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -562,45 +441,22 @@ var _userAvatar2 = _interopRequireDefault(_userAvatar);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var Users = function Users(props) {
+    var userList = props.users.map(function (user, index) {
+        return _react2.default.createElement(_userAvatar2.default, { user: user, key: index });
+    });
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Users = function (_React$Component) {
-    _inherits(Users, _React$Component);
-
-    function Users() {
-        _classCallCheck(this, Users);
-
-        return _possibleConstructorReturn(this, Object.getPrototypeOf(Users).apply(this, arguments));
-    }
-
-    _createClass(Users, [{
-        key: 'render',
-        value: function render() {
-            var userList = this.props.users.map(function (user, index) {
-                return _react2.default.createElement(_userAvatar2.default, { user: user, key: index });
-            });
-
-            return _react2.default.createElement(
-                'div',
-                null,
-                userList
-            );
-        }
-    }]);
-
-    return Users;
-}(_react2.default.Component);
+    return _react2.default.createElement(
+        'div',
+        null,
+        userList
+    );
+};
 
 exports.default = Users;
 
 },{"../components/userAvatar":7,"react":171}],9:[function(require,module,exports){
 'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -616,80 +472,40 @@ var _users2 = _interopRequireDefault(_users);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Welcome = function (_React$Component) {
-    _inherits(Welcome, _React$Component);
-
-    function Welcome() {
-        _classCallCheck(this, Welcome);
-
-        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Welcome).call(this));
-
-        _this.state = {
-            users: []
-        };
-        return _this;
-    }
-
-    _createClass(Welcome, [{
-        key: 'componentWillMount',
-        value: function componentWillMount() {
-            this.user = this.props.user;
-            this.usersRepo = this.props.usersRepo;
-            this.usersRepo.onUserAdded(this.addUser.bind(this));
-        }
-    }, {
-        key: 'addUser',
-        value: function addUser() {
-            this.setState({
-                users: this.usersRepo.users
-            });
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
+var Welcome = function Welcome(props) {
+    return _react2.default.createElement(
+        'div',
+        { className: 'app-contest__slide' },
+        _react2.default.createElement(
+            'div',
+            { className: 'app-contest__header' },
+            _react2.default.createElement(
+                'h1',
+                { className: 'mint-header-primary' },
+                'You made it!'
+            )
+        ),
+        _react2.default.createElement(
+            'div',
+            { className: 'app-contest__content' },
+            _react2.default.createElement(
                 'div',
-                { className: 'app-contest__slide' },
-                _react2.default.createElement(
-                    'div',
-                    { className: 'app-contest__header' },
-                    _react2.default.createElement(
-                        'h1',
-                        { className: 'mint-header-primary' },
-                        'You made it!'
-                    )
-                ),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'app-contest__content' },
-                    _react2.default.createElement(
-                        'div',
-                        { className: 'mint-avatar mint-avatar--xlarge' },
-                        _react2.default.createElement('img', { className: 'mint-avatar__image', src: this.user.avatar })
-                    )
-                ),
-                _react2.default.createElement(
-                    'div',
-                    null,
-                    _react2.default.createElement(
-                        'p',
-                        { className: 'mint-text' },
-                        'Who\'s else is in?'
-                    ),
-                    _react2.default.createElement(_users2.default, { users: this.state.users })
-                )
-            );
-        }
-    }]);
-
-    return Welcome;
-}(_react2.default.Component);
+                { className: 'mint-avatar mint-avatar--xlarge' },
+                _react2.default.createElement('img', { className: 'mint-avatar__image', src: props.user.avatar })
+            )
+        ),
+        _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+                'p',
+                { className: 'mint-text' },
+                'Who\'s else is in?'
+            ),
+            _react2.default.createElement(_users2.default, { users: props.users })
+        )
+    );
+};
 
 exports.default = Welcome;
 
