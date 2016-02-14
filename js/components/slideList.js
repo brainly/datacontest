@@ -14,17 +14,17 @@ class SlideList extends React.Component{
         super();
 
         this.state =  {
-          questions : [],
-          slideIndex: 0
-        }
+            questions : [],
+            users: [],
+            slideIndex: 0
+        };
+
+        this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
     }
 
     componentWillMount() {
-        this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
-
         this.initUser();
-
-        this.usersRepo = new UsersRepository(this.firebaseRef);
+        this.initUsers();
         this.votesRepo = new VotesRepository(this.firebaseRef);
         this.initQuestionRepository();
     }
@@ -37,6 +37,7 @@ class SlideList extends React.Component{
                     text: answer
                 };
             });
+
             return {
                 id: index,
                 text : question.text,
@@ -87,6 +88,17 @@ class SlideList extends React.Component{
         });
     }
 
+    initUsers() {
+        this.usersRepo = new UsersRepository(this.firebaseRef);
+        this.usersRepo.onUserAdded(() => {
+            this.setState({ users: this.usersRepo.users });
+        });
+    }
+
+    handleLoginClick() {
+        this.user.authenticate();
+    }
+
     render() {
         const questions = this.state.questions;
         const questionNodes = questions.map((question) => {
@@ -98,8 +110,8 @@ class SlideList extends React.Component{
         return (
             <div className="app-contest" style={this.style}>
                 <div className="app-contest__slides">
-                    <LogIn user={this.user}/>
-                    <Welcome usersRepo={this.usersRepo} user={this.user} />
+                    <LogIn handleClick={this.handleLoginClick.bind(this)}/>
+                    <Welcome users={this.state.users} user={this.user} />
                     {questionNodes}
                     <Results />
                 </div>
