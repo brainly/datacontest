@@ -16,6 +16,7 @@ class SlideList extends React.Component{
         this.state =  {
             questions : [],
             users: [],
+            votes: {},
             slideIndex: 0
         };
 
@@ -25,7 +26,7 @@ class SlideList extends React.Component{
     componentWillMount() {
         this.initUser();
         this.initUsers();
-        this.votesRepo = new VotesRepository(this.firebaseRef);
+        this.initVotes();
         this.initQuestionRepository();
     }
 
@@ -41,7 +42,8 @@ class SlideList extends React.Component{
             return {
                 id: index,
                 text : question.text,
-                answers : answerList
+                answers : answerList,
+                correct: question.correct
             };
         });
     }
@@ -95,6 +97,13 @@ class SlideList extends React.Component{
         });
     }
 
+    initVotes() {
+        this.votesRepo = new VotesRepository(this.firebaseRef);
+        this.votesRepo.onVotesChange(() => {
+            this.setState({ votes: this.votesRepo.votes });
+        });
+    }
+
     handleLoginClick() {
         this.user.authenticate();
     }
@@ -113,7 +122,7 @@ class SlideList extends React.Component{
                     <LogIn handleClick={this.handleLoginClick.bind(this)}/>
                     <Welcome users={this.state.users} user={this.user} />
                     {questionNodes}
-                    <Results />
+                    <Results users={this.state.users} questions={this.state.questions} votes={this.state.votes} />
                 </div>
             </div>
         )

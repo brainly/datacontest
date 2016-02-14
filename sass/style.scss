@@ -42,6 +42,16 @@ body {
     margin-top: 48px;
   }
 
+  &__results {
+    td, th {
+      padding: 4px;
+    }
+
+    tr {
+      margin-bottom: 8px;
+    }
+  }
+
   .mint-label__icon {
     align-items: center;
   }
@@ -54,5 +64,15 @@ body {
     font-size: 1.5rem;
     line-height: 1.5rem;
     margin-bottom: 24px;
+  }
+}
+
+.result {
+  &__user {
+    display: flex;
+
+    .mint-avatar {
+      margin-right: 4px;
+    }
   }
 }
