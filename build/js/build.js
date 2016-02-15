@@ -172,29 +172,133 @@ var Question = function Question(props) {
 exports.default = Question;
 
 },{"../components/answer.js":2,"react":171}],5:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _react = require("react");
+var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _userAvatar = require('../components/userAvatar');
+
+var _userAvatar2 = _interopRequireDefault(_userAvatar);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Results = function Results() {
-    return _react2.default.createElement(
-        "div",
-        { className: "app-contest__slide" },
-        _react2.default.createElement(
-            "div",
-            { className: "app-contest__header" },
+var Results = function Results(props) {
+    var getResults = function getResults() {
+        var questions = props.questions;
+        var votes = props.votes;
+        var usersArray = props.users;
+        var usersMap = {};
+        var results = {};
+        var resultsArr = [];
+
+        //create a map of users (with UIDs being keys)
+        usersArray.forEach(function (user) {
+            return usersMap[user.id] = user;
+        });
+
+        //count points for each user
+        for (var questionId in questions) {
+            if (questions.hasOwnProperty(questionId) && votes && votes[questionId]) {
+                var correct = questions[questionId].correct;
+
+                for (var userId in votes[questionId]) {
+                    if (votes[questionId].hasOwnProperty(userId) && votes[questionId][userId] === correct) {
+                        results[userId] = results[userId] ? results[userId] + 1 : 1;
+                    }
+                }
+            }
+        }
+
+        //create a handy results array - used for rendering
+        for (var userId in results) {
+            if (results.hasOwnProperty(userId) && usersMap[userId]) {
+                resultsArr.push({
+                    user: usersMap[userId],
+                    score: results[userId]
+                });
+            }
+        }
+
+        //sort results by number of points
+        resultsArr = resultsArr.sort(function (a, b) {
+            return b.score - a.score;
+        });
+
+        return resultsArr;
+    };
+
+    var userResults = getResults().map(function (result, index) {
+        return _react2.default.createElement(
+            'tr',
+            { className: 'result', key: index },
             _react2.default.createElement(
-                "h1",
-                { className: "mint-text-bit mint-text-bit--not-responsive mint-text-bit--xlarge" },
-                "Thank you for voting!"
+                'td',
+                { className: 'mint-text' },
+                index + 1,
+                '.'
+            ),
+            _react2.default.createElement(
+                'td',
+                null,
+                _react2.default.createElement(
+                    'div',
+                    { className: 'result__user' },
+                    _react2.default.createElement(_userAvatar2.default, { user: result.user }),
+                    result.user.name
+                )
+            ),
+            _react2.default.createElement(
+                'td',
+                null,
+                result.score
+            )
+        );
+    });
+
+    return _react2.default.createElement(
+        'div',
+        { className: 'app-contest__slide' },
+        _react2.default.createElement(
+            'div',
+            { className: 'app-contest__header' },
+            _react2.default.createElement(
+                'h1',
+                { className: 'mint-text-bit mint-text-bit--not-responsive mint-text-bit--xlarge' },
+                'Thank you for voting!'
+            )
+        ),
+        _react2.default.createElement(
+            'table',
+            { className: 'app-contest__results' },
+            _react2.default.createElement(
+                'thead',
+                null,
+                _react2.default.createElement(
+                    'tr',
+                    null,
+                    _react2.default.createElement('th', null),
+                    _react2.default.createElement(
+                        'th',
+                        null,
+                        'user'
+                    ),
+                    _react2.default.createElement(
+                        'th',
+                        null,
+                        'points'
+                    )
+                )
+            ),
+            _react2.default.createElement(
+                'tbody',
+                null,
+                userResults
             )
         )
     );
@@ -202,7 +306,7 @@ var Results = function Results() {
 
 exports.default = Results;
 
-},{"react":171}],6:[function(require,module,exports){
+},{"../components/userAvatar":7,"react":171}],6:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -266,6 +370,7 @@ var SlideList = function (_React$Component) {
         _this.state = {
             questions: [],
             users: [],
+            votes: {},
             slideIndex: 0
         };
 
@@ -278,7 +383,7 @@ var SlideList = function (_React$Component) {
         value: function componentWillMount() {
             this.initUser();
             this.initUsers();
-            this.votesRepo = new _votesRepository2.default(this.firebaseRef);
+            this.initVotes();
             this.initQuestionRepository();
         }
     }, {
@@ -295,7 +400,8 @@ var SlideList = function (_React$Component) {
                 return {
                     id: index,
                     text: question.text,
-                    answers: answerList
+                    answers: answerList,
+                    correct: question.correct
                 };
             });
         }
@@ -365,6 +471,16 @@ var SlideList = function (_React$Component) {
             });
         }
     }, {
+        key: 'initVotes',
+        value: function initVotes() {
+            var _this5 = this;
+
+            this.votesRepo = new _votesRepository2.default(this.firebaseRef);
+            this.votesRepo.onVotesChange(function () {
+                _this5.setState({ votes: _this5.votesRepo.votes });
+            });
+        }
+    }, {
         key: 'handleLoginClick',
         value: function handleLoginClick() {
             this.user.authenticate();
@@ -372,11 +488,11 @@ var SlideList = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this5 = this;
+            var _this6 = this;
 
             var questions = this.state.questions;
             var questionNodes = questions.map(function (question) {
-                return _react2.default.createElement(_question2.default, { question: question, user: _this5.user, votes: _this5.votesRepo, key: question.id });
+                return _react2.default.createElement(_question2.default, { question: question, user: _this6.user, votes: _this6.votesRepo, key: question.id });
             });
 
             return _react2.default.createElement(
@@ -388,7 +504,7 @@ var SlideList = function (_React$Component) {
                     _react2.default.createElement(_logIn2.default, { handleClick: this.handleLoginClick.bind(this) }),
                     _react2.default.createElement(_welcome2.default, { users: this.state.users, user: this.user }),
                     questionNodes,
-                    _react2.default.createElement(_results2.default, null)
+                    _react2.default.createElement(_results2.default, { users: this.state.users, questions: this.state.questions, votes: this.state.votes })
                 )
             );
         }
@@ -538,10 +654,27 @@ var QuestionRepository = function () {
 
         var questionsRef = this.firebase.child('/questions');
         var currentQuestionRef = this.firebase.child('/current-question');
+        var correctAnswers = this.firebase.child('/results');
 
         questionsRef.once("value", function (snapshot) {
             _this.questions = snapshot.val();
             _this._trigger('ready', _this.questions);
+
+            correctAnswers.once("value", function (snapshot) {
+                var answers = snapshot.val();
+
+                if (answers) {
+                    answers.forEach(function (correct, idx) {
+                        console.log(idx, correct, _this.questions[idx]);
+                        _this.questions[idx].correct = correct;
+                    });
+                }
+
+                _this._trigger('ready', _this.questions);
+            }, function (e) {
+                console.log('User is not an admin.', e);
+                _this._trigger('ready', _this.questions);
+            });
         }, this._trigger.bind(this, 'error'));
 
         currentQuestionRef.on("value", function (snapshot) {
@@ -758,6 +891,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var VotesRepository = function () {
     function VotesRepository(firebase) {
+        var _this = this;
+
         _classCallCheck(this, VotesRepository);
 
         this.firebase = firebase;
@@ -767,7 +902,10 @@ var VotesRepository = function () {
         };
         this.votes = {};
 
-        console.log('construct');
+        this.firebase.child('votes/').on('value', function (data) {
+            _this.votes = data.val();
+            _this._trigger('votes-change');
+        });
     }
 
     _createClass(VotesRepository, [{
@@ -795,24 +933,8 @@ var VotesRepository = function () {
         }
     }, {
         key: 'onVotesChange',
-        value: function onVotesChange(questionId, listener) {
-            var _this = this;
-
-            this.votes[questionId] = {};
-
-            this.firebase.child('votes/' + questionId).on('child_added', function (data) {
-                var voteId = data.val();
-                var userId = data.key();
-                _this.votes[questionId][userId] = voteId;
-                listener(_this.votes[questionId]);
-            });
-
-            this.firebase.child('votes/' + questionId).on('child_changed', function (data) {
-                var voteId = data.val();
-                var userId = data.key();
-                _this.votes[questionId][userId] = voteId;
-                listener(_this.votes[questionId]);
-            });
+        value: function onVotesChange(listener) {
+            this._listeners['votes-change'].push(listener);
         }
     }]);
 

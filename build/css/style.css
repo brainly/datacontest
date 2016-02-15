@@ -36,6 +36,10 @@ body {
     padding: 45px 30px 30px; }
   .app-contest__action {
     margin-top: 48px; }
+  .app-contest__results td, .app-contest__results th {
+    padding: 4px; }
+  .app-contest__results tr {
+    margin-bottom: 8px; }
   .app-contest .mint-label__icon {
     -webkit-align-items: center;
     -ms-flex-align: center;
@@ -47,3 +51,10 @@ body {
     font-size: 1.5rem;
     line-height: 1.5rem;
     margin-bottom: 24px; }
+
+.result__user {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex; }
+  .result__user .mint-avatar {
+    margin-right: 4px; }
