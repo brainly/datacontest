@@ -3,40 +3,41 @@ import UserAvatar from '../components/userAvatar';
 
 const Results = (props) => {
     const getResults = () => {
-        // all the logic below moved from previous js file.
         let questions = props.questions;
         let votes = props.votes;
         let usersArray = props.users;
-        let users = {};
+        let usersMap = {};
         let results = {};
         let resultsArr = [];
 
-        usersArray.forEach((user) => users[user.id] = user);
+        //create a map of users (with UIDs being keys)
+        usersArray.forEach(user => usersMap[user.id] = user);
 
-        for(var questionId in questions) {
-            var correct = questions[questionId].correct;
+        //count points for each user
+        for (const questionId in questions) {
+            if (questions.hasOwnProperty(questionId) && votes && votes[questionId]) {
+                const correct = questions[questionId].correct;
 
-            if(votes && votes[questionId]) {
-                for(var userId in votes[questionId]) {
-                    if(votes[questionId][userId] == correct) {
+                for (const userId in votes[questionId]) {
+                    if (votes[questionId].hasOwnProperty(userId) && votes[questionId][userId] === correct) {
                         results[userId] = results[userId] ? results[userId] + 1 : 1;
                     }
                 }
             }
         }
 
-        for(var userId in results) {
-            if(results.hasOwnProperty(userId) && users[userId]) {
+        //create a handy results array - used for rendering
+        for (const userId in results) {
+            if (results.hasOwnProperty(userId) && usersMap[userId]) {
                 resultsArr.push({
-                    user: users[userId],
+                    user: usersMap[userId],
                     score: results[userId]
                 });
             }
         }
 
-        resultsArr = resultsArr.sort(function(a,b) {
-            return b.score - a.score;
-        });
+        //sort results by number of points
+        resultsArr = resultsArr.sort((a, b) => b.score - a.score);
 
         return resultsArr;
     };
@@ -49,7 +50,7 @@ const Results = (props) => {
                 </td>
                 <td>
                     <div className="result__user">
-                        <UserAvatar user={result.user} />
+                        <UserAvatar user={result.user}/>
                         {result.user.name}
                     </div>
                 </td>
@@ -76,12 +77,12 @@ const Results = (props) => {
                         user
                     </th>
                     <th>
-                        correct answers
+                        points
                     </th>
                 </tr>
                 </thead>
                 <tbody>
-                    {userResults}
+                {userResults}
                 </tbody>
             </table>
 

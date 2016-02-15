@@ -190,39 +190,42 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Results = function Results(props) {
     var getResults = function getResults() {
-        // all the logic below moved from previous js file.
         var questions = props.questions;
         var votes = props.votes;
         var usersArray = props.users;
-        var users = {};
+        var usersMap = {};
         var results = {};
+        var resultsArr = [];
 
+        //create a map of users (with UIDs being keys)
         usersArray.forEach(function (user) {
-            return users[user.id] = user;
+            return usersMap[user.id] = user;
         });
 
+        //count points for each user
         for (var questionId in questions) {
-            var correct = questions[questionId].correct;
+            if (questions.hasOwnProperty(questionId) && votes && votes[questionId]) {
+                var correct = questions[questionId].correct;
 
-            if (votes && votes[questionId]) {
                 for (var userId in votes[questionId]) {
-                    if (votes[questionId][userId] == correct) {
+                    if (votes[questionId].hasOwnProperty(userId) && votes[questionId][userId] === correct) {
                         results[userId] = results[userId] ? results[userId] + 1 : 1;
                     }
                 }
             }
         }
 
-        var resultsArr = [];
+        //create a handy results array - used for rendering
         for (var userId in results) {
-            if (results.hasOwnProperty(userId) && users[userId]) {
+            if (results.hasOwnProperty(userId) && usersMap[userId]) {
                 resultsArr.push({
-                    user: users[userId],
+                    user: usersMap[userId],
                     score: results[userId]
                 });
             }
         }
 
+        //sort results by number of points
         resultsArr = resultsArr.sort(function (a, b) {
             return b.score - a.score;
         });
@@ -288,7 +291,7 @@ var Results = function Results(props) {
                     _react2.default.createElement(
                         'th',
                         null,
-                        'correct answers'
+                        'points'
                     )
                 )
             ),
@@ -651,10 +654,27 @@ var QuestionRepository = function () {
 
         var questionsRef = this.firebase.child('/questions');
         var currentQuestionRef = this.firebase.child('/current-question');
+        var correctAnswers = this.firebase.child('/results');
 
         questionsRef.once("value", function (snapshot) {
             _this.questions = snapshot.val();
             _this._trigger('ready', _this.questions);
+
+            correctAnswers.once("value", function (snapshot) {
+                var answers = snapshot.val();
+
+                if (answers) {
+                    answers.forEach(function (correct, idx) {
+                        console.log(idx, correct, _this.questions[idx]);
+                        _this.questions[idx].correct = correct;
+                    });
+                }
+
+                _this._trigger('ready', _this.questions);
+            }, function (e) {
+                console.log('User is not an admin.', e);
+                _this._trigger('ready', _this.questions);
+            });
         }, this._trigger.bind(this, 'error'));
 
         currentQuestionRef.on("value", function (snapshot) {
