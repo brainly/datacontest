@@ -8,6 +8,7 @@ import QuestionRepository from '../question-repository';
 import UsersRepository from '../users-repository';
 import VotesRepository from '../votes-repository';
 import User from '../user';
+import SlideController from '../slide-controller';
 
 class SlideList extends React.Component{
     constructor() {
@@ -25,9 +26,21 @@ class SlideList extends React.Component{
 
     componentWillMount() {
         this.initUser();
-        this.initUsers();
-        this.initVotes();
-        this.initQuestionRepository();
+    }
+
+    initSlideController() {
+        let sc = new SlideController(this.firebaseRef);
+
+        sc.onSlideChange(this.goToSlide.bind(this));
+
+        //TODO refactor
+        window.addEventListener('keydown', (ev) => {
+            if(ev.keyCode === 39) {
+                sc.nextSlide();
+            } else if(ev.keyCode === 37) {
+                sc.prevSlide();
+            }
+        });
     }
 
     getQuestionList(questions) {
@@ -48,11 +61,6 @@ class SlideList extends React.Component{
         });
     }
 
-    changeQuestion(questionIndex = 0) {
-        const slideIndex = parseInt(questionIndex, 10) + 2;
-        this.goToSlide(slideIndex);
-    }
-
     goToSlide(slide = 0) {
         const slideIndex = parseInt(slide, 10);
         this.style = {
@@ -64,7 +72,9 @@ class SlideList extends React.Component{
         });
     }
 
-    showError() {}
+    showError(e) {
+        console.error(e);
+    }
 
     initQuestionRepository() {
         this.questionRepo = new QuestionRepository(this.firebaseRef);
@@ -74,20 +84,33 @@ class SlideList extends React.Component{
                 questions: this.questions
             });
         });
-        this.questionRepo.onQuestionChange(this.changeQuestion.bind(this));
         this.questionRepo.onError(this.showError);
     }
 
     initUser() {
         this.user = new User(this.firebaseRef);
+
+        if(this.user.isAuthenticated()) {
+            this._onLogin();
+        }
+
         this.user.onAuth(() => {
             if(this.user.isAuthenticated()) {
-                this.changeQuestion(0);
-                this.usersRepo.register(this.user);
+                this._onLogin();
             } else {
                 this.goToSlide(0);
             }
         });
+    }
+
+    _onLogin() {
+        this.initSlideController();
+        this.initUsers();
+        this.initVotes();
+        this.initQuestionRepository();
+
+        this.goToSlide(1);
+        this.usersRepo.register(this.user);
     }
 
     initUsers() {
@@ -95,6 +118,7 @@ class SlideList extends React.Component{
         this.usersRepo.onUserAdded(() => {
             this.setState({ users: this.usersRepo.users });
         });
+        this.usersRepo.onError(this.showError.bind(this));
     }
 
     initVotes() {
@@ -102,6 +126,7 @@ class SlideList extends React.Component{
         this.votesRepo.onVotesChange(() => {
             this.setState({ votes: this.votesRepo.votes });
         });
+        this.votesRepo.onError(this.showError.bind(this));
     }
 
     handleLoginClick() {
