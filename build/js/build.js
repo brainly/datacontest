@@ -261,19 +261,9 @@ var Results = function Results(props) {
         );
     });
 
-    return _react2.default.createElement(
-        'div',
-        { className: 'app-contest__slide' },
-        _react2.default.createElement(
-            'div',
-            { className: 'app-contest__header' },
-            _react2.default.createElement(
-                'h1',
-                { className: 'mint-text-bit mint-text-bit--not-responsive mint-text-bit--xlarge' },
-                'Thank you for voting!'
-            )
-        ),
-        _react2.default.createElement(
+    if (userResults.length) {
+
+        resultsTable = _react2.default.createElement(
             'table',
             { className: 'app-contest__results' },
             _react2.default.createElement(
@@ -300,7 +290,22 @@ var Results = function Results(props) {
                 null,
                 userResults
             )
-        )
+        );
+    }
+
+    return _react2.default.createElement(
+        'div',
+        { className: 'app-contest__slide' },
+        _react2.default.createElement(
+            'div',
+            { className: 'app-contest__header' },
+            _react2.default.createElement(
+                'h1',
+                { className: 'mint-text-bit mint-text-bit--not-responsive mint-text-bit--xlarge' },
+                'Thank you for voting!'
+            )
+        ),
+        resultsTable
     );
 };
 
