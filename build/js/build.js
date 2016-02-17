@@ -22,13 +22,13 @@ function start() {
 start();
 
 },{"./components/slideList.js":6,"react":172,"react-dom":43}],2:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _react = require("react");
+var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -38,31 +38,31 @@ var Answer = function Answer(props) {
     var handleChange = function handleChange() {
         return props.votes.vote(props.user.id, props.questionId, props.answer.id);
     };
-    var inputId = "answer-" + props.questionId + "-" + props.answer.id;
-
+    var inputId = 'answer-' + props.questionId + '-' + props.answer.id;
+    var correctClass = props.showCorrectAnswers && props.correct ? 'app-contest__answer--correct' : '';
     return _react2.default.createElement(
-        "div",
-        { className: "answer" },
+        'div',
+        { className: "app-contest__answer " + correctClass },
         _react2.default.createElement(
-            "div",
-            { className: "mint-label mint-label--large mint-label--emphasised mint-label--secondary" },
+            'div',
+            { className: 'mint-label mint-label--large mint-label--emphasised mint-label--secondary' },
             _react2.default.createElement(
-                "div",
-                { className: "mint-label__icon" },
+                'div',
+                { className: 'mint-label__icon' },
                 _react2.default.createElement(
-                    "div",
-                    { className: "mint-radio" },
-                    _react2.default.createElement("input", { id: inputId,
-                        className: "mint-radio__element",
-                        name: "answer",
-                        type: "radio",
+                    'div',
+                    { className: 'mint-radio' },
+                    _react2.default.createElement('input', { id: inputId,
+                        className: 'mint-radio__element',
+                        name: 'answer',
+                        type: 'radio',
                         onChange: handleChange }),
-                    _react2.default.createElement("label", { className: "mint-radio__ghost", htmlFor: inputId })
+                    _react2.default.createElement('label', { className: 'mint-radio__ghost', htmlFor: inputId })
                 )
             ),
             _react2.default.createElement(
-                "label",
-                { className: "mint-label__text", htmlFor: inputId },
+                'label',
+                { className: 'mint-label__text', htmlFor: inputId },
                 props.answer.text
             )
         )
@@ -146,8 +146,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Question = function Question(props) {
     var votes = props.votes;
     var question = props.question;
+    var showCorrectAnswers = props.showCorrectAnswers;
+
     var answerNodes = question.answers.map(function (answer) {
-        return _react2.default.createElement(_answer2.default, { answer: answer, questionId: question.id, user: props.user, votes: votes, key: answer.id });
+        return _react2.default.createElement(_answer2.default, {
+            answer: answer,
+            questionId: question.id,
+            user: props.user,
+            votes: votes,
+            showCorrectAnswers: showCorrectAnswers,
+            correct: question.correct == answer.id,
+            key: answer.id
+        });
     });
 
     return _react2.default.createElement(
@@ -165,6 +175,19 @@ var Question = function Question(props) {
                 'div',
                 { className: 'app-content_answers' },
                 answerNodes
+            )
+        ),
+        _react2.default.createElement(
+            'div',
+            { className: 'app-contest__footer' },
+            _react2.default.createElement(
+                'div',
+                { className: 'mint-button-secondary mint-button-secondary--dark-inverse', onClick: props.handleClick },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'mint-button-secondary__hole' },
+                    'show/hide correct answers'
+                )
             )
         )
     );
@@ -382,7 +405,8 @@ var SlideList = function (_React$Component) {
             questions: [],
             users: [],
             votes: {},
-            slideIndex: 0
+            slideIndex: 0,
+            showCorrectAnswers: false
         };
 
         _this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
@@ -515,6 +539,11 @@ var SlideList = function (_React$Component) {
             this.votesRepo.onError(this.showError.bind(this));
         }
     }, {
+        key: 'toggleCorrectAnswers',
+        value: function toggleCorrectAnswers() {
+            this.setState({ showCorrectAnswers: !this.state.showCorrectAnswers });
+        }
+    }, {
         key: 'handleLoginClick',
         value: function handleLoginClick() {
             this.user.authenticate();
@@ -526,7 +555,13 @@ var SlideList = function (_React$Component) {
 
             var questions = this.state.questions;
             var questionNodes = questions.map(function (question) {
-                return _react2.default.createElement(_question2.default, { question: question, user: _this6.user, votes: _this6.votesRepo, key: question.id });
+                return _react2.default.createElement(_question2.default, {
+                    question: question,
+                    user: _this6.user,
+                    votes: _this6.votesRepo,
+                    showCorrectAnswers: _this6.state.showCorrectAnswers,
+                    handleClick: _this6.toggleCorrectAnswers.bind(_this6),
+                    key: question.id });
             });
 
             return _react2.default.createElement(
