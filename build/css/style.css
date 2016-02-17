@@ -18,7 +18,8 @@ body {
   top: 0;
   bottom: 0;
   transition: left 0.5s;
-  overflow: hidden; }
+  overflow-y: scroll;
+  overflow-x: hidden; }
   .app-contest__header {
     margin-bottom: 48px; }
   .app-contest__content {
@@ -36,6 +37,11 @@ body {
     padding: 45px 30px 30px; }
   .app-contest__action {
     margin-top: 48px; }
+  .app-contest__answer--correct {
+    background-color: #abe3ff;
+    border-radius: 4px; }
+  .app-contest__footer {
+    margin-top: 24px; }
   .app-contest__results td, .app-contest__results th {
     padding: 4px; }
   .app-contest__results tr {

@@ -18,7 +18,8 @@ class SlideList extends React.Component{
             questions : [],
             users: [],
             votes: {},
-            slideIndex: 0
+            slideIndex: 0,
+            showCorrectAnswers: false
         };
 
         this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
@@ -129,6 +130,10 @@ class SlideList extends React.Component{
         this.votesRepo.onError(this.showError.bind(this));
     }
 
+    toggleCorrectAnswers() {
+        this.setState({ showCorrectAnswers : !this.state.showCorrectAnswers});
+    }
+
     handleLoginClick() {
         this.user.authenticate();
     }
@@ -137,7 +142,13 @@ class SlideList extends React.Component{
         const questions = this.state.questions;
         const questionNodes = questions.map((question) => {
             return (
-                <Question question={question} user={this.user} votes={this.votesRepo}key={question.id}/>
+                <Question
+                    question={question}
+                    user={this.user}
+                    votes={this.votesRepo}
+                    showCorrectAnswers={this.state.showCorrectAnswers}
+                    handleClick={this.toggleCorrectAnswers.bind(this)}
+                    key={question.id}/>
             );
         });
 

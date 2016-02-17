@@ -17,7 +17,8 @@ body {
   top: 0;
   bottom: 0;
   transition: left 0.5s;
-  overflow: hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
 
   &__header {
     margin-bottom: 48px;
@@ -40,6 +41,17 @@ body {
 
   &__action {
     margin-top: 48px;
+  }
+
+  &__answer {
+    &--correct {
+      background-color: #abe3ff;
+      border-radius: 4px;
+    }
+  }
+
+  &__footer {
+    margin-top: 24px;
   }
 
   &__results {

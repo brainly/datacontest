@@ -3,9 +3,9 @@ import React from 'react';
 const Answer = (props) => {
     const handleChange = () => props.votes.vote(props.user.id, props.questionId, props.answer.id);
     const inputId = `answer-${props.questionId}-${props.answer.id}`;
-
+    const correctClass = (props.showCorrectAnswers && props.correct) ? 'app-contest__answer--correct' : '';
     return (
-        <div className="answer">
+        <div className={ "app-contest__answer " + correctClass }>
             <div className="mint-label mint-label--large mint-label--emphasised mint-label--secondary">
                 <div className="mint-label__icon">
 
