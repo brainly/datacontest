@@ -61,14 +61,9 @@ const Results = (props) => {
         )
     });
 
-    return (
-        <div className="app-contest__slide">
-            <div className="app-contest__header">
-                <h1 className="mint-text-bit mint-text-bit--not-responsive mint-text-bit--xlarge">
-                    Thank you for voting!
-                </h1>
-            </div>
+    if (userResults.length) {
 
+        resultsTable = (
             <table className="app-contest__results">
                 <thead>
                 <tr>
@@ -85,6 +80,18 @@ const Results = (props) => {
                 {userResults}
                 </tbody>
             </table>
+        );
+    }
+
+    return (
+        <div className="app-contest__slide">
+            <div className="app-contest__header">
+                <h1 className="mint-text-bit mint-text-bit--not-responsive mint-text-bit--xlarge">
+                    Thank you for voting!
+                </h1>
+            </div>
+
+            {resultsTable}
 
         </div>
     )
