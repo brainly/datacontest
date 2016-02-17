@@ -261,6 +261,8 @@ var Results = function Results(props) {
         );
     });
 
+    var resultsTable = '';
+
     if (userResults.length) {
 
         resultsTable = _react2.default.createElement(

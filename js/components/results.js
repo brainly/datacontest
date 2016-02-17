@@ -61,6 +61,8 @@ const Results = (props) => {
         )
     });
 
+    let resultsTable = '';
+
     if (userResults.length) {
 
         resultsTable = (
