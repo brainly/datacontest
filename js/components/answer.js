@@ -3,9 +3,19 @@ import React from 'react';
 const Answer = (props) => {
     const handleChange = () => props.votes.vote(props.user.id, props.questionId, props.answer.id);
     const inputId = `answer-${props.questionId}-${props.answer.id}`;
+    let className = 'app-contest__answer';
+    let votes = '';
+
+    if(props.highlight) {
+        className += ' app-contest__answer--correct';
+    }
+
+    if(props.showVoters) {
+        votes = `(${props.voters.length} votes)`;
+    }
 
     return (
-        <div className="answer">
+        <div className={className}>
             <div className="mint-label mint-label--large mint-label--emphasised mint-label--secondary">
                 <div className="mint-label__icon">
 
@@ -20,7 +30,7 @@ const Answer = (props) => {
 
                 </div>
                 <label className="mint-label__text" htmlFor={inputId}>
-                    {props.answer.text}
+                    {props.answer.text} {votes}
                 </label>
             </div>
         </div>

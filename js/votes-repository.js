@@ -23,6 +23,21 @@ class VotesRepository {
         });
     }
 
+    getVotersForAnswer(questionId, answerId) {
+        if(!this.votes) {
+            return [];
+        }
+
+        const voters = [];
+        for(const voterId in this.votes[questionId]) {
+            if(this.votes[questionId][voterId] === answerId) {
+                voters.push(voterId);
+            }
+        }
+
+        return voters;
+    }
+
     _trigger(action, data) {
         (this._listeners[action]).forEach((callback) => {
             callback(data);

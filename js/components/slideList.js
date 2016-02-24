@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Question from '../components/question';
+import Solution from '../components/solution';
 import LogIn from '../components/logIn';
 import Welcome from '../components/welcome';
 import Results from '../components/results';
@@ -34,13 +35,15 @@ class SlideList extends React.Component{
         sc.onSlideChange(this.goToSlide.bind(this));
 
         //TODO refactor
-        window.addEventListener('keydown', (ev) => {
-            if(ev.keyCode === 39) {
-                sc.nextSlide();
-            } else if(ev.keyCode === 37) {
-                sc.prevSlide();
-            }
-        });
+        if(this.user.isAdmin()) {
+            window.addEventListener('keydown', (ev) => {
+                if(ev.keyCode === 39 || ev.keyCode === 32) { // arrow right or space
+                    sc.nextSlide();
+                } else if(ev.keyCode === 37) { // arrow left
+                    sc.prevSlide();
+                }
+            });
+        }
     }
 
     getQuestionList(questions) {
@@ -78,6 +81,7 @@ class SlideList extends React.Component{
 
     initQuestionRepository() {
         this.questionRepo = new QuestionRepository(this.firebaseRef);
+
         this.questionRepo.onReady((questions) => {
             this.questions = this.getQuestionList(questions);
             this.setState({
@@ -85,14 +89,18 @@ class SlideList extends React.Component{
             });
         });
         this.questionRepo.onError(this.showError);
+
+        this.questionRepo.loadQuestions({
+            withAnswers: this.user.isAdmin()
+        });
     }
 
     initUser() {
         this.user = new User(this.firebaseRef);
 
-        if(this.user.isAuthenticated()) {
-            this._onLogin();
-        }
+        //if(this.user.isAuthenticated()) {
+        //    this._onLogin();
+        //}
 
         this.user.onAuth(() => {
             if(this.user.isAuthenticated()) {
@@ -123,9 +131,13 @@ class SlideList extends React.Component{
 
     initVotes() {
         this.votesRepo = new VotesRepository(this.firebaseRef);
-        this.votesRepo.onVotesChange(() => {
-            this.setState({ votes: this.votesRepo.votes });
-        });
+
+        if(this.user.isAdmin()) {
+            this.votesRepo.onVotesChange(() => {
+                this.setState({ votes: this.votesRepo.votes });
+            });
+        }
+
         this.votesRepo.onError(this.showError.bind(this));
     }
 
@@ -137,9 +149,18 @@ class SlideList extends React.Component{
         const questions = this.state.questions;
         const questionNodes = questions.map((question) => {
             return (
-                <Question question={question} user={this.user} votes={this.votesRepo}key={question.id}/>
+                <Question question={question} user={this.user} votes={this.votesRepo} key={question.id}/>
             );
         });
+
+        let solutionNodes = [];
+        if(this.user.isAdmin()) {
+            solutionNodes = questions.map((question) => {
+                return (
+                    <Solution question={question} user={this.user} votes={this.votesRepo} key={question.id}/>
+                );
+            })
+        }
 
         return (
             <div className="app-contest" style={this.style}>
@@ -147,6 +168,7 @@ class SlideList extends React.Component{
                     <LogIn handleClick={this.handleLoginClick.bind(this)}/>
                     <Welcome users={this.state.users} user={this.user} />
                     {questionNodes}
+                    {solutionNodes}
                     <Results users={this.state.users} questions={this.state.questions} votes={this.state.votes} />
                 </div>
             </div>
