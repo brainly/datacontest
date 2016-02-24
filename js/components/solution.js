@@ -24,7 +24,7 @@ const Solution = (props) => {
         <div className="app-contest__slide app-contest__slide--colored">
             <div className="app-contest__question">
                 <h1 className="mint-header-secondary">
-                    {props.question.text}
+                    {question.id + 1}. {props.question.text}
                 </h1>
 
                 <div className="app-content_answers">

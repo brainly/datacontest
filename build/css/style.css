@@ -16,12 +16,8 @@ body {
   left: 0;
   top: 0;
   bottom: 0;
-  transition: left 0.5s;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  -webkit-perspective: 1px;
-  perspective: 1px;
-  transition: background-color 0.5s; }
+  transition: left 0.5s, background-color 0.5s;
+  overflow: hidden; }
   .app-contest__header {
     margin-bottom: 48px; }
   .app-contest__content {
@@ -37,14 +33,23 @@ body {
     -ms-flex-negative: 0;
     flex-shrink: 0;
     padding: 45px 30px 30px;
-    background-color: #fff; }
+    background-color: #fff;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-perspective: 1px;
+    perspective: 1px; }
     .app-contest__slide--colored {
       background-color: inherit; }
   .app-contest__action {
     margin-top: 48px; }
-  .app-contest__answer--correct {
-    background-color: #ffffff;
-    border-radius: 12px; }
+  .app-contest__answer {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    padding: 8px; }
+    .app-contest__answer--correct {
+      background-color: #ffffff;
+      border-radius: 20px; }
   .app-contest__footer {
     margin-top: 24px; }
   .app-contest__results td, .app-contest__results th {
@@ -56,10 +61,9 @@ body {
     -ms-flex-align: center;
     -ms-grid-row-align: center;
     align-items: center; }
-  .app-contest .mint-label {
-    margin-bottom: 12px; }
   .app-contest .mint-label--secondary .mint-label__text {
-    color: #000; }
+    color: #000;
+    width: 100%; }
   .app-contest .mint-header-secondary {
     font-size: 1.5rem;
     line-height: 1.5rem;

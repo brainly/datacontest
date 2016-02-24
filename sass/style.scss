@@ -15,11 +15,8 @@ body {
   left: 0;
   top: 0;
   bottom: 0;
-  transition: left 0.5s;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  perspective: 1px; //FIX for Chrome bug making avatars square
-  transition: background-color 0.5s;
+  transition: left 0.5s, background-color 0.5s;
+  overflow: hidden;
 
   &__header {
     margin-bottom: 48px;
@@ -39,6 +36,9 @@ body {
     flex-shrink: 0;
     padding: 45px 30px 30px;
     background-color: #fff;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    perspective: 1px; //FIX for Chrome bug making avatars square
 
     &--colored {
       background-color: inherit;
@@ -50,9 +50,12 @@ body {
   }
 
   &__answer {
+    display: flex;
+    padding: 8px;
+
     &--correct {
       background-color: #ffffff;
-      border-radius: 12px;
+      border-radius: 20px;
     }
   }
 
@@ -74,12 +77,9 @@ body {
     align-items: center;
   }
 
-  .mint-label {
-    margin-bottom: 12px;
-  }
-
   .mint-label--secondary .mint-label__text {
     color: #000;
+    width: 100%;
   }
 
   .mint-header-secondary {

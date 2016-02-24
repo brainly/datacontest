@@ -176,6 +176,8 @@ var Question = function Question(props) {
             _react2.default.createElement(
                 'h1',
                 { className: 'mint-header-secondary' },
+                question.id + 1,
+                '. ',
                 props.question.text
             ),
             _react2.default.createElement(
@@ -664,6 +666,8 @@ var Solution = function Solution(props) {
             _react2.default.createElement(
                 'h1',
                 { className: 'mint-header-secondary' },
+                question.id + 1,
+                '. ',
                 props.question.text
             ),
             _react2.default.createElement(
