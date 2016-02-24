@@ -162,6 +162,11 @@ var Question = function Question(props) {
     var answerNodes = question.answers.map(function (answer) {
         return _react2.default.createElement(_answer2.default, { answer: answer, questionId: question.id, user: props.user, votes: votes, key: answer.id });
     });
+    var voters = '';
+    if (props.showVoters) {
+        var voteCount = votes.getVotersForQuestion(question.id).length;
+        voters = '(' + voteCount + ' votes)';
+    }
 
     return _react2.default.createElement(
         'div',
@@ -178,6 +183,11 @@ var Question = function Question(props) {
                 'div',
                 { className: 'app-content_answers' },
                 answerNodes
+            ),
+            _react2.default.createElement(
+                'p',
+                { className: 'mint-text mint-text--light' },
+                voters
             )
         )
     );
@@ -565,13 +575,24 @@ var SlideList = function (_React$Component) {
 
             var questions = this.state.questions;
             var questionNodes = questions.map(function (question) {
-                return _react2.default.createElement(_question2.default, { question: question, user: _this6.user, votes: _this6.votesRepo, backgroundStyle: _this6.getBackgroundStyle(question.id), key: question.id });
+                return _react2.default.createElement(_question2.default, {
+                    question: question,
+                    user: _this6.user,
+                    votes: _this6.votesRepo,
+                    showVoters: _this6.user.isAdmin(),
+                    key: question.id,
+                    backgroundStyle: _this6.getBackgroundStyle(question.id) });
             });
 
             var solutionNodes = [];
             if (this.user.isAdmin()) {
                 solutionNodes = questions.map(function (question) {
-                    return _react2.default.createElement(_solution2.default, { question: question, user: _this6.user, votes: _this6.votesRepo, backgroundStyle: _this6.getBackgroundStyle(question.id), key: question.id });
+                    return _react2.default.createElement(_solution2.default, {
+                        question: question,
+                        user: _this6.user,
+                        votes: _this6.votesRepo,
+                        key: question.id,
+                        backgroundStyle: _this6.getBackgroundStyle(question.id) });
                 });
             }
 
@@ -1175,6 +1196,15 @@ var VotesRepository = function () {
             }
 
             return voters;
+        }
+    }, {
+        key: 'getVotersForQuestion',
+        value: function getVotersForQuestion(questionId) {
+            if (!this.votes || !this.votes[questionId]) {
+                return [];
+            }
+
+            return Object.keys(this.votes[questionId]);
         }
     }, {
         key: '_trigger',

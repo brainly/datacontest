@@ -38,6 +38,14 @@ class VotesRepository {
         return voters;
     }
 
+    getVotersForQuestion(questionId) {
+        if(!this.votes || !this.votes[questionId]) {
+            return [];
+        }
+
+        return Object.keys(this.votes[questionId]);
+    }
+
     _trigger(action, data) {
         (this._listeners[action]).forEach((callback) => {
             callback(data);

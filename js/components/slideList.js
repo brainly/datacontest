@@ -163,7 +163,13 @@ class SlideList extends React.Component{
         const questions = this.state.questions;
         const questionNodes = questions.map((question) => {
             return (
-                <Question question={question} user={this.user} votes={this.votesRepo} backgroundStyle={this.getBackgroundStyle(question.id)} key={question.id}/>
+                <Question
+                    question={question}
+                    user={this.user}
+                    votes={this.votesRepo}
+                    showVoters={this.user.isAdmin()}
+                    key={question.id}
+                    backgroundStyle={this.getBackgroundStyle(question.id)}/>
             );
         });
 
@@ -171,7 +177,12 @@ class SlideList extends React.Component{
         if(this.user.isAdmin()) {
             solutionNodes = questions.map((question) => {
                 return (
-                    <Solution question={question} user={this.user} votes={this.votesRepo} backgroundStyle={this.getBackgroundStyle(question.id)} key={question.id}/>
+                    <Solution
+                        question={question}
+                        user={this.user}
+                        votes={this.votesRepo}
+                        key={question.id}
+                        backgroundStyle={this.getBackgroundStyle(question.id)}/>
                 );
             })
         }
