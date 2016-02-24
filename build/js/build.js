@@ -158,13 +158,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Question = function Question(props) {
     var votes = props.votes;
     var question = props.question;
+    var backgroundStyle = props.backgroundStyle;
     var answerNodes = question.answers.map(function (answer) {
         return _react2.default.createElement(_answer2.default, { answer: answer, questionId: question.id, user: props.user, votes: votes, key: answer.id });
     });
 
     return _react2.default.createElement(
         'div',
-        { className: 'app-contest__slide' },
+        { className: 'app-contest__slide', style: backgroundStyle },
         _react2.default.createElement(
             'div',
             { className: 'app-contest__question' },
@@ -544,6 +545,15 @@ var SlideList = function (_React$Component) {
             this.votesRepo.onError(this.showError.bind(this));
         }
     }, {
+        key: 'getBackgroundStyle',
+        value: function getBackgroundStyle(index) {
+            var colors = ['#a7e6c6', '#abe3ff', '#fdc7c1', '#ffdb8d', '#bdc8fc'];
+
+            return {
+                backgroundColor: colors[index % colors.length]
+            };
+        }
+    }, {
         key: 'handleLoginClick',
         value: function handleLoginClick() {
             this.user.authenticate();
@@ -555,13 +565,13 @@ var SlideList = function (_React$Component) {
 
             var questions = this.state.questions;
             var questionNodes = questions.map(function (question) {
-                return _react2.default.createElement(_question2.default, { question: question, user: _this6.user, votes: _this6.votesRepo, key: question.id });
+                return _react2.default.createElement(_question2.default, { question: question, user: _this6.user, votes: _this6.votesRepo, backgroundStyle: _this6.getBackgroundStyle(question.id), key: question.id });
             });
 
             var solutionNodes = [];
             if (this.user.isAdmin()) {
                 solutionNodes = questions.map(function (question) {
-                    return _react2.default.createElement(_solution2.default, { question: question, user: _this6.user, votes: _this6.votesRepo, key: question.id });
+                    return _react2.default.createElement(_solution2.default, { question: question, user: _this6.user, votes: _this6.votesRepo, backgroundStyle: _this6.getBackgroundStyle(question.id), key: question.id });
                 });
             }
 
@@ -606,6 +616,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Solution = function Solution(props) {
     var votes = props.votes;
     var question = props.question;
+    var backgroundStyle = props.backgroundStyle;
     var answerNodes = question.answers.map(function (answer) {
         var voters = props.votes.getVotersForAnswer(question.id, answer.id);
 
@@ -622,7 +633,7 @@ var Solution = function Solution(props) {
 
     return _react2.default.createElement(
         'div',
-        { className: 'app-contest__slide' },
+        { className: 'app-contest__slide', style: backgroundStyle },
         _react2.default.createElement(
             'div',
             { className: 'app-contest__question' },

@@ -141,6 +141,20 @@ class SlideList extends React.Component{
         this.votesRepo.onError(this.showError.bind(this));
     }
 
+    getBackgroundStyle(index) {
+        const colors = [
+            '#a7e6c6',
+            '#abe3ff',
+            '#fdc7c1',
+            '#ffdb8d',
+            '#bdc8fc'
+        ];
+
+        return {
+            backgroundColor: colors[index % colors.length ]
+        };
+    }
+
     handleLoginClick() {
         this.user.authenticate();
     }
@@ -149,7 +163,7 @@ class SlideList extends React.Component{
         const questions = this.state.questions;
         const questionNodes = questions.map((question) => {
             return (
-                <Question question={question} user={this.user} votes={this.votesRepo} key={question.id}/>
+                <Question question={question} user={this.user} votes={this.votesRepo} backgroundStyle={this.getBackgroundStyle(question.id)} key={question.id}/>
             );
         });
 
@@ -157,7 +171,7 @@ class SlideList extends React.Component{
         if(this.user.isAdmin()) {
             solutionNodes = questions.map((question) => {
                 return (
-                    <Solution question={question} user={this.user} votes={this.votesRepo} key={question.id}/>
+                    <Solution question={question} user={this.user} votes={this.votesRepo} backgroundStyle={this.getBackgroundStyle(question.id)} key={question.id}/>
                 );
             })
         }
