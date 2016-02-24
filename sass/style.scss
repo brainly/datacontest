@@ -7,7 +7,6 @@ body {
   bottom: 0;
   position: fixed;
   overflow: hidden;
-  transition: background-color 0.5s;
 }
 
 .app-contest {
@@ -20,6 +19,7 @@ body {
   overflow-y: scroll;
   overflow-x: hidden;
   perspective: 1px; //FIX for Chrome bug making avatars square
+  transition: background-color 0.5s;
 
   &__header {
     margin-bottom: 48px;
@@ -38,6 +38,11 @@ body {
     width: 100vw;
     flex-shrink: 0;
     padding: 45px 30px 30px;
+    background-color: #fff;
+
+    &--colored {
+      background-color: inherit;
+    }
   }
 
   &__action {
@@ -71,6 +76,10 @@ body {
 
   .mint-label {
     margin-bottom: 12px;
+  }
+
+  .mint-label--secondary .mint-label__text {
+    color: #000;
   }
 
   .mint-header-secondary {

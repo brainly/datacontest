@@ -11,6 +11,14 @@ import VotesRepository from '../votes-repository';
 import User from '../user';
 import SlideController from '../slide-controller';
 
+const backgroundColors = [
+    '#6ed6a0',
+    '#5bb8ff',
+    '#6e85ff',
+    '#ff8073',
+    '#ffbe32'
+];
+
 class SlideList extends React.Component{
     constructor() {
         super();
@@ -66,8 +74,10 @@ class SlideList extends React.Component{
 
     goToSlide(slide = 0) {
         const slideIndex = parseInt(slide, 10);
+
         this.style = {
-            left: -(slideIndex * 100) + 'vw'
+            left: -(slideIndex * 100) + 'vw',
+            backgroundColor: this.getBackgroundColor()
         };
 
         this.setState({
@@ -141,18 +151,16 @@ class SlideList extends React.Component{
         this.votesRepo.onError(this.showError.bind(this));
     }
 
-    getBackgroundStyle(index) {
-        const colors = [
-            '#a7e6c6',
-            '#abe3ff',
-            '#fdc7c1',
-            '#ffdb8d',
-            '#bdc8fc'
-        ];
+    getBackgroundColor() {
+        const backgroundColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length )];
 
-        return {
-            backgroundColor: colors[index % colors.length ]
-        };
+        if ( this.currentBackgroundColor !== backgroundColor ) {
+            this.currentBackgroundColor = backgroundColor;
+            return this.currentBackgroundColor;
+        }
+
+        return this.getBackgroundColor();
+
     }
 
     handleLoginClick() {
@@ -168,8 +176,7 @@ class SlideList extends React.Component{
                     user={this.user}
                     votes={this.votesRepo}
                     showVoters={this.user.isAdmin()}
-                    key={question.id}
-                    backgroundStyle={this.getBackgroundStyle(question.id)}/>
+                    key={question.id}/>
             );
         });
 
@@ -181,8 +188,7 @@ class SlideList extends React.Component{
                         question={question}
                         user={this.user}
                         votes={this.votesRepo}
-                        key={question.id}
-                        backgroundStyle={this.getBackgroundStyle(question.id)}/>
+                        key={question.id}/>
                 );
             })
         }

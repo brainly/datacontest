@@ -4,7 +4,6 @@ import Answer from '../components/answer.js';
 const Question = (props) => {
     const votes = props.votes;
     const question = props.question;
-    const backgroundStyle = props.backgroundStyle;
     const answerNodes = question.answers.map((answer)  => {
         return (
             <Answer answer={answer} questionId={question.id} user={props.user} votes={votes} key={answer.id}/>
@@ -17,7 +16,7 @@ const Question = (props) => {
     }
 
     return (
-        <div className="app-contest__slide" style={backgroundStyle}>
+        <div className="app-contest__slide app-contest__slide--colored">
             <div className="app-contest__question">
                 <h1 className="mint-header-secondary">
                     {props.question.text}

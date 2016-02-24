@@ -158,7 +158,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Question = function Question(props) {
     var votes = props.votes;
     var question = props.question;
-    var backgroundStyle = props.backgroundStyle;
     var answerNodes = question.answers.map(function (answer) {
         return _react2.default.createElement(_answer2.default, { answer: answer, questionId: question.id, user: props.user, votes: votes, key: answer.id });
     });
@@ -170,7 +169,7 @@ var Question = function Question(props) {
 
     return _react2.default.createElement(
         'div',
-        { className: 'app-contest__slide', style: backgroundStyle },
+        { className: 'app-contest__slide app-contest__slide--colored' },
         _react2.default.createElement(
             'div',
             { className: 'app-contest__question' },
@@ -397,6 +396,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var backgroundColors = ['#6ed6a0', '#5bb8ff', '#6e85ff', '#ff8073', '#ffbe32'];
+
 var SlideList = function (_React$Component) {
     _inherits(SlideList, _React$Component);
 
@@ -466,8 +467,10 @@ var SlideList = function (_React$Component) {
             var slide = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
 
             var slideIndex = parseInt(slide, 10);
+
             this.style = {
-                left: -(slideIndex * 100) + 'vw'
+                left: -(slideIndex * 100) + 'vw',
+                backgroundColor: this.getBackgroundColor()
             };
 
             this.setState({
@@ -555,13 +558,16 @@ var SlideList = function (_React$Component) {
             this.votesRepo.onError(this.showError.bind(this));
         }
     }, {
-        key: 'getBackgroundStyle',
-        value: function getBackgroundStyle(index) {
-            var colors = ['#a7e6c6', '#abe3ff', '#fdc7c1', '#ffdb8d', '#bdc8fc'];
+        key: 'getBackgroundColor',
+        value: function getBackgroundColor() {
+            var backgroundColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length)];
 
-            return {
-                backgroundColor: colors[index % colors.length]
-            };
+            if (this.currentBackgroundColor !== backgroundColor) {
+                this.currentBackgroundColor = backgroundColor;
+                return this.currentBackgroundColor;
+            }
+
+            return this.getBackgroundColor();
         }
     }, {
         key: 'handleLoginClick',
@@ -580,8 +586,7 @@ var SlideList = function (_React$Component) {
                     user: _this6.user,
                     votes: _this6.votesRepo,
                     showVoters: _this6.user.isAdmin(),
-                    key: question.id,
-                    backgroundStyle: _this6.getBackgroundStyle(question.id) });
+                    key: question.id });
             });
 
             var solutionNodes = [];
@@ -591,8 +596,7 @@ var SlideList = function (_React$Component) {
                         question: question,
                         user: _this6.user,
                         votes: _this6.votesRepo,
-                        key: question.id,
-                        backgroundStyle: _this6.getBackgroundStyle(question.id) });
+                        key: question.id });
                 });
             }
 
@@ -637,7 +641,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Solution = function Solution(props) {
     var votes = props.votes;
     var question = props.question;
-    var backgroundStyle = props.backgroundStyle;
     var answerNodes = question.answers.map(function (answer) {
         var voters = props.votes.getVotersForAnswer(question.id, answer.id);
 
@@ -654,7 +657,7 @@ var Solution = function Solution(props) {
 
     return _react2.default.createElement(
         'div',
-        { className: 'app-contest__slide', style: backgroundStyle },
+        { className: 'app-contest__slide app-contest__slide--colored' },
         _react2.default.createElement(
             'div',
             { className: 'app-contest__question' },

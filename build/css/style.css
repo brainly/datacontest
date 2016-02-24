@@ -6,8 +6,7 @@ body {
   top: 0;
   bottom: 0;
   position: fixed;
-  overflow: hidden;
-  transition: background-color 0.5s; }
+  overflow: hidden; }
 
 .app-contest {
   display: -webkit-flex;
@@ -21,7 +20,8 @@ body {
   overflow-y: scroll;
   overflow-x: hidden;
   -webkit-perspective: 1px;
-  perspective: 1px; }
+  perspective: 1px;
+  transition: background-color 0.5s; }
   .app-contest__header {
     margin-bottom: 48px; }
   .app-contest__content {
@@ -36,7 +36,10 @@ body {
     -webkit-flex-shrink: 0;
     -ms-flex-negative: 0;
     flex-shrink: 0;
-    padding: 45px 30px 30px; }
+    padding: 45px 30px 30px;
+    background-color: #fff; }
+    .app-contest__slide--colored {
+      background-color: inherit; }
   .app-contest__action {
     margin-top: 48px; }
   .app-contest__answer--correct {
@@ -55,6 +58,8 @@ body {
     align-items: center; }
   .app-contest .mint-label {
     margin-bottom: 12px; }
+  .app-contest .mint-label--secondary .mint-label__text {
+    color: #000; }
   .app-contest .mint-header-secondary {
     font-size: 1.5rem;
     line-height: 1.5rem;
