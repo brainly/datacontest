@@ -19,6 +19,7 @@ body {
   transition: left 0.5s;
   overflow-y: scroll;
   overflow-x: hidden;
+  perspective: 1px; //FIX for Chrome bug making avatars square
 
   &__header {
     margin-bottom: 48px;
