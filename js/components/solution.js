@@ -4,7 +4,6 @@ import Answer from '../components/answer.js';
 const Solution = (props) => {
     const votes = props.votes;
     const question = props.question;
-    const backgroundStyle = props.backgroundStyle;
     const answerNodes = question.answers.map((answer)  => {
         const voters = props.votes.getVotersForAnswer(question.id, answer.id);
 
@@ -22,10 +21,10 @@ const Solution = (props) => {
     });
 
     return (
-        <div className="app-contest__slide" style={backgroundStyle}>
+        <div className="app-contest__slide app-contest__slide--colored">
             <div className="app-contest__question">
                 <h1 className="mint-header-secondary">
-                    {props.question.text}
+                    {question.id + 1}. {props.question.text}
                 </h1>
 
                 <div className="app-content_answers">
