@@ -10,14 +10,7 @@ import UsersRepository from '../users-repository';
 import VotesRepository from '../votes-repository';
 import User from '../user';
 import SlideController from '../slide-controller';
-
-const backgroundColors = [
-    '#6ed6a0',
-    '#5bb8ff',
-    '#6e85ff',
-    '#ff8073',
-    '#ffbe32'
-];
+import backgroundColors from '../components/backgroundColors';
 
 class SlideList extends React.Component{
     constructor() {
@@ -38,19 +31,20 @@ class SlideList extends React.Component{
     }
 
     initSlideController() {
-        let sc = new SlideController(this.firebaseRef);
+        this.sc = new SlideController(this.firebaseRef);
 
-        sc.onSlideChange(this.goToSlide.bind(this));
+        this.sc.onSlideChange(this.goToSlide.bind(this));
 
-        //TODO refactor
         if(this.user.isAdmin()) {
-            window.addEventListener('keydown', (ev) => {
-                if(ev.keyCode === 39 || ev.keyCode === 32) { // arrow right or space
-                    sc.nextSlide();
-                } else if(ev.keyCode === 37) { // arrow left
-                    sc.prevSlide();
-                }
-            });
+            window.addEventListener('keydown', this.navigate.bind(this));
+        }
+    }
+
+    navigate(event) {
+        if(event.keyCode === 39 || event.keyCode === 32) {
+            this.sc.nextSlide();
+        } else if (event.keyCode === 37) {
+            this.sc.prevSlide();
         }
     }
 
@@ -77,7 +71,7 @@ class SlideList extends React.Component{
 
         this.style = {
             left: -(slideIndex * 100) + 'vw',
-            backgroundColor: this.getBackgroundColor()
+            backgroundColor: this.getBackgroundColor(slideIndex)
         };
 
         this.setState({
@@ -107,10 +101,6 @@ class SlideList extends React.Component{
 
     initUser() {
         this.user = new User(this.firebaseRef);
-
-        //if(this.user.isAuthenticated()) {
-        //    this._onLogin();
-        //}
 
         this.user.onAuth(() => {
             if(this.user.isAuthenticated()) {
@@ -151,16 +141,8 @@ class SlideList extends React.Component{
         this.votesRepo.onError(this.showError.bind(this));
     }
 
-    getBackgroundColor() {
-        const backgroundColor = backgroundColors[Math.floor(Math.random() * backgroundColors.length )];
-
-        if ( this.currentBackgroundColor !== backgroundColor ) {
-            this.currentBackgroundColor = backgroundColor;
-            return this.currentBackgroundColor;
-        }
-
-        return this.getBackgroundColor();
-
+    getBackgroundColor(index) {
+        return backgroundColors[index % backgroundColors.length];
     }
 
     handleLoginClick() {
@@ -181,6 +163,7 @@ class SlideList extends React.Component{
         });
 
         let solutionNodes = [];
+
         if(this.user.isAdmin()) {
             solutionNodes = questions.map((question) => {
                 return (
