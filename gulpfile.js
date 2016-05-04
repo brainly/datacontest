@@ -26,7 +26,7 @@ function compile(watch) {
         })));
 
     function rebundle() {
-        bundler.bundle()
+        return bundler.bundle()
             .on('error', function(err) { console.error(err); this.emit('end'); })
             .pipe(source('build.js'))
             .pipe(buffer())
@@ -39,7 +39,7 @@ function compile(watch) {
     if (watch) {
         bundler.on('update', () => {
             console.log('-> bundling...');
-            rebundle();
+            rebundle().on('end', () => console.log('-> done!'));
         });
     }
 
