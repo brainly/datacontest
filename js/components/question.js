@@ -3,6 +3,7 @@ import Answer from '../components/answer.js';
 
 const Question = (props) => {
     const votes = props.votes;
+    const users = props.users;
     const question = props.question;
     const answerNodes = question.answers.map((answer)  => {
         return (
@@ -12,7 +13,8 @@ const Question = (props) => {
     let voters = '';
     if(props.showVoters) {
         const voteCount = votes.getVotersForQuestion(question.id).length;
-        voters = `(${voteCount} votes)`;
+        const userCount = users.length;
+        voters = `(${voteCount} / ${userCount} votes)`;
     }
 
     return (
