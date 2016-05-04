@@ -16,7 +16,8 @@ body {
   left: 0;
   top: 0;
   bottom: 0;
-  transition: left 0.5s, background-color 0.5s;
+  transition: left 0.5s ease-in-out, background-color 0.5s ease-in-out;
+  will-change: transition;
   overflow: hidden; }
   .app-contest__header {
     margin-bottom: 48px; }
