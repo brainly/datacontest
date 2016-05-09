@@ -96,7 +96,7 @@ exports.default = Answer;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var backgroundColors = ['#6ed6a0', '#6e85ff', '#ff8073', '#ffbe32'];
+var backgroundColors = ['#6ed6a0', '#5bb8ff', '#6e85ff', '#ff8073', '#ffbe32'];
 
 exports.default = backgroundColors;
 
@@ -174,6 +174,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Question = function Question(props) {
     var votes = props.votes;
+    var users = props.users;
     var question = props.question;
     var answerNodes = question.answers.map(function (answer) {
         return _react2.default.createElement(_answer2.default, { answer: answer, questionId: question.id, user: props.user, votes: votes, key: answer.id });
@@ -181,7 +182,8 @@ var Question = function Question(props) {
     var voters = '';
     if (props.showVoters) {
         var voteCount = votes.getVotersForQuestion(question.id).length;
-        voters = '(' + voteCount + ' votes)';
+        var userCount = users.length;
+        voters = '(' + voteCount + ' / ' + userCount + ' votes)';
     }
 
     return _react2.default.createElement(
@@ -594,6 +596,7 @@ var SlideList = function (_React$Component) {
                 return _react2.default.createElement(_question2.default, {
                     question: question,
                     user: _this6.user,
+                    users: _this6.state.users,
                     votes: _this6.votesRepo,
                     showVoters: _this6.user.isAdmin(),
                     key: question.id });
@@ -763,6 +766,15 @@ var _users2 = _interopRequireDefault(_users);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Welcome = function Welcome(props) {
+    var filterMe = function filterMe(users) {
+        return users.filter(function (u) {
+            return u.id !== props.user.id;
+        });
+    };
+    var numberOfPeople = function numberOfPeople(num) {
+        return num > 1 ? 'There are ' + num + ' of us!' : 'You are all alone here. Wait for the others!';
+    };
+
     return _react2.default.createElement(
         'div',
         { className: 'app-contest__slide' },
@@ -780,7 +792,7 @@ var Welcome = function Welcome(props) {
             { className: 'app-contest__content' },
             _react2.default.createElement(
                 'div',
-                { className: 'mint-avatar mint-avatar--xlarge' },
+                { className: 'mint-avatar mint-avatar--xxlarge' },
                 _react2.default.createElement('img', { className: 'mint-avatar__image', src: props.user.avatar })
             )
         ),
@@ -790,9 +802,14 @@ var Welcome = function Welcome(props) {
             _react2.default.createElement(
                 'p',
                 { className: 'mint-text' },
-                'Who\'s else is in?'
+                'Who else is in?'
             ),
-            _react2.default.createElement(_users2.default, { users: props.users })
+            _react2.default.createElement(_users2.default, { users: filterMe(props.users) }),
+            _react2.default.createElement(
+                'span',
+                null,
+                numberOfPeople(props.users.length)
+            )
         )
     );
 };

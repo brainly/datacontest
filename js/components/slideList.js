@@ -156,6 +156,7 @@ class SlideList extends React.Component{
                 <Question
                     question={question}
                     user={this.user}
+                    users={this.state.users}
                     votes={this.votesRepo}
                     showVoters={this.user.isAdmin()}
                     key={question.id}/>
