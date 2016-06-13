@@ -436,7 +436,17 @@ var SlideList = function (_React$Component) {
             slideIndex: 0
         };
 
-        _this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCxzcHxObM03zjybvC8hfZ4AU5umx0rptk",
+            authDomain: "datacontest.firebaseapp.com",
+            databaseURL: "https://datacontest.firebaseio.com",
+            storageBucket: "project-465582725197367567.appspot.com"
+        };
+        firebase.initializeApp(config);
+
+        _this.db = firebase.database().ref();
+        _this.auth = firebase.auth();
         return _this;
     }
 
@@ -448,7 +458,7 @@ var SlideList = function (_React$Component) {
     }, {
         key: 'initSlideController',
         value: function initSlideController() {
-            this.sc = new _slideController2.default(this.firebaseRef);
+            this.sc = new _slideController2.default(this.db);
 
             this.sc.onSlideChange(this.goToSlide.bind(this));
 
@@ -510,7 +520,7 @@ var SlideList = function (_React$Component) {
         value: function initQuestionRepository() {
             var _this2 = this;
 
-            this.questionRepo = new _questionRepository2.default(this.firebaseRef);
+            this.questionRepo = new _questionRepository2.default(this.db);
 
             this.questionRepo.onReady(function (questions) {
                 _this2.questions = _this2.getQuestionList(questions);
@@ -529,7 +539,7 @@ var SlideList = function (_React$Component) {
         value: function initUser() {
             var _this3 = this;
 
-            this.user = new _user2.default(this.firebaseRef);
+            this.user = new _user2.default(this.db, this.auth);
 
             this.user.onAuth(function () {
                 if (_this3.user.isAuthenticated()) {
@@ -555,7 +565,7 @@ var SlideList = function (_React$Component) {
         value: function initUsers() {
             var _this4 = this;
 
-            this.usersRepo = new _usersRepository2.default(this.firebaseRef);
+            this.usersRepo = new _usersRepository2.default(this.db);
             this.usersRepo.onUserAdded(function () {
                 _this4.setState({ users: _this4.usersRepo.users });
             });
@@ -566,7 +576,7 @@ var SlideList = function (_React$Component) {
         value: function initVotes() {
             var _this5 = this;
 
-            this.votesRepo = new _votesRepository2.default(this.firebaseRef);
+            this.votesRepo = new _votesRepository2.default(this.db);
 
             if (this.user.isAdmin()) {
                 this.votesRepo.onVotesChange(function () {
@@ -991,18 +1001,23 @@ Object.defineProperty(exports, "__esModule", {
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var User = function () {
-    function User(firebase) {
+    function User(db, auth) {
         var _this = this;
 
         _classCallCheck(this, User);
 
-        this.firebase = firebase;
+        this.db = db;
+        this.auth = auth;
         this._listeners = {
             'auth': []
         };
 
-        this.firebase.onAuth(function (authData) {
-            _this._initUser(authData).then(function () {
+        this.auth.getRedirectResult().catch(function (error) {
+            _this._trigger('error', error);
+        });
+
+        this.auth.onAuthStateChanged(function (user) {
+            _this._initUser(user).then(function () {
                 _this._trigger('auth');
             });
         });
@@ -1023,15 +1038,11 @@ var User = function () {
         value: function authenticate() {
             var _this2 = this;
 
-            this.firebase.authWithOAuthRedirect('google', function (error, authData) {
-                if (error) {
-                    _this2._trigger('error', error);
-                } else {
-                    //this will never happen since on success user is redirected to the oauth page
-                }
-            }, {
-                remember: 'sessionOnly',
-                scope: 'email'
+            var provider = new firebase.auth.GoogleAuthProvider();
+            provider.addScope('email');
+
+            this.auth.signInWithRedirect(provider).catch(function (error) {
+                _this2._trigger('error', error);
             });
         }
     }, {
@@ -1050,11 +1061,17 @@ var User = function () {
         key: '_initUser',
         value: function _initUser(authData) {
             //TODO add '@brainly.com' check
-
-            this.id = authData ? authData.uid : null;
-            this.name = authData ? authData.google.displayName : null;
-            this.avatar = authData ? authData.google.profileImageURL : null;
-            this.email = authData ? authData.google.email : null;
+            if (authData) {
+                this.id = authData.uid || authData.providerData[0].uid || null;
+                this.name = authData.displayName || authData.providerData[0].displayName || null;
+                this.avatar = authData.photoURL || authData.providerData[0].photoURL || null;
+                this.email = authData.email || authData.providerData[0].email || null;
+            } else {
+                this.id = null;
+                this.name = null;
+                this.avatar = null;
+                this.email = null;
+            }
 
             return this._checkIfAdmin();
         }
@@ -1065,7 +1082,7 @@ var User = function () {
 
             //we are trying to determine if user has admin rights by accessing admin-only data
             return new Promise(function (resolve, reject) {
-                _this3.firebase.child('admin-access').once('value', function () {
+                _this3.db.child('admin-access').once('value', function () {
                     _this3.admin = true;
                     resolve();
                 }, function (err) {
@@ -1097,20 +1114,20 @@ Object.defineProperty(exports, "__esModule", {
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var UsersRepository = function () {
-    function UsersRepository(firebase) {
+    function UsersRepository(db) {
         var _this = this;
 
         _classCallCheck(this, UsersRepository);
 
-        this.firebase = firebase;
+        this.db = db;
         this._listeners = {
             'user-added': [],
             'error': []
         };
         this.users = [];
 
-        this.firebase.child('users/').on('child_added', function (data) {
-            var user = _this._addUser(data.key(), data.val());
+        this.db.child('users/').on('child_added', function (data) {
+            var user = _this._addUser(data.key, data.val());
             _this._trigger('user-added', user);
         });
     }
@@ -1118,7 +1135,7 @@ var UsersRepository = function () {
     _createClass(UsersRepository, [{
         key: 'register',
         value: function register(user) {
-            var votesRef = this.firebase.child('users/' + user.id);
+            var votesRef = this.db.child('users/' + user.id);
             votesRef.set({
                 name: user.name,
                 avatar: user.avatar
