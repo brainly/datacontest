@@ -45,7 +45,7 @@ const Results = (props) => {
     const userResults = getResults().map((result, index) => {
         return (
             <tr className="result" key={index}>
-                <td className="mint-text">
+                <td className="sg-text">
                     {index + 1}.
                 </td>
                 <td>
@@ -88,7 +88,7 @@ const Results = (props) => {
     return (
         <div className="app-contest__slide">
             <div className="app-contest__header">
-                <h1 className="mint-text-bit mint-text-bit--not-responsive mint-text-bit--xlarge">
+                <h1 className="sg-text-bit sg-text-bit--not-responsive sg-text-bit--xlarge">
                     Thank you for voting!
                 </h1>
             </div>

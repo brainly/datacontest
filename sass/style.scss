@@ -74,16 +74,16 @@ body {
     }
   }
 
-  .mint-label__icon {
+  .sg-label__icon {
     align-items: center;
   }
 
-  .mint-label--secondary .mint-label__text {
+  .sg-label--secondary .sg-label__text {
     color: #000;
     width: 100%;
   }
 
-  .mint-header-secondary {
+  .sg-header-secondary {
     font-size: 1.5rem;
     line-height: 1.5rem;
     margin-bottom: 24px;
@@ -94,7 +94,7 @@ body {
   &__user {
     display: flex;
 
-    .mint-avatar {
+    .sg-avatar {
       margin-right: 4px;
     }
   }

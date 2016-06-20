@@ -5,9 +5,9 @@ const LogIn = (props) => {
         <div className="app-contest__slide">
 
             <div className="app-contest__header">
-                <h1 className="mint-text-bit">
-                    <span className="mint-text-bit__hole">
-                        <div className="mint-logo mint-logo--small">
+                <h1 className="sg-text-bit">
+                    <span className="sg-text-bit__hole">
+                        <div className="sg-logo sg-logo--small">
 
                         </div>
                     </span>
@@ -15,12 +15,12 @@ const LogIn = (props) => {
                 </h1>
             </div>
 
-            <p className="mint-text">Do you like contests? Do you enjoy getting prizes? This thing might be for you.</p>
+            <p className="sg-text">Do you like contests? Do you enjoy getting prizes? This thing might be for you.</p>
 
             <div className="app-contest__action js-log-in">
-                <a className="mint-button-primary mint-button-primary--full"
+                <a className="sg-button-primary sg-button-primary--full"
                     onClick={props.handleClick}>
-                    <div className="mint-button-primary__hole">
+                    <div className="sg-button-primary__hole">
                         Join the fun!
                     </div>
                 </a>
