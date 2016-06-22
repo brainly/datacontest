@@ -23,7 +23,7 @@ const Solution = (props) => {
     return (
         <div className="app-contest__slide app-contest__slide--colored">
             <div className="app-contest__question">
-                <h1 className="mint-header-secondary">
+                <h1 className="sg-header-secondary">
                     {question.id + 1}. {props.question.text}
                 </h1>
 

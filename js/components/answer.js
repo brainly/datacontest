@@ -16,20 +16,20 @@ const Answer = (props) => {
 
     return (
         <div className={className}>
-            <div className="mint-label mint-label--large mint-label--emphasised mint-label--secondary">
-                <div className="mint-label__icon">
+            <div className="sg-label sg-label--large sg-label--emphasised sg-label--secondary">
+                <div className="sg-label__icon">
 
-                    <div className="mint-radio">
+                    <div className="sg-radio">
                         <input id={inputId}
-                               className="mint-radio__element"
+                               className="sg-radio__element"
                                name="answer"
                                type="radio"
                                onChange={handleChange} />
-                        <label className="mint-radio__ghost" htmlFor={inputId}></label>
+                        <label className="sg-radio__ghost" htmlFor={inputId}></label>
                     </div>
 
                 </div>
-                <label className="mint-label__text" htmlFor={inputId}>
+                <label className="sg-label__text" htmlFor={inputId}>
                     {props.answer.text} {votes}
                 </label>
             </div>
