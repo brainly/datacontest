@@ -1,3 +1,5 @@
+![Brainly Data Contest App](http://i.imgur.com/nTx6vlg.png)
+
 # Data Contest App
 
 This little app is used for voting in our internal, weekly data contests here at Brainly :chart_with_upwards_trend:
