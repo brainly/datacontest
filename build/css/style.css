@@ -57,15 +57,15 @@ body {
     padding: 4px; }
   .app-contest__results tr {
     margin-bottom: 8px; }
-  .app-contest .mint-label__icon {
+  .app-contest .sg-label__icon {
     -webkit-align-items: center;
     -ms-flex-align: center;
     -ms-grid-row-align: center;
     align-items: center; }
-  .app-contest .mint-label--secondary .mint-label__text {
+  .app-contest .sg-label--secondary .sg-label__text {
     color: #000;
     width: 100%; }
-  .app-contest .mint-header-secondary {
+  .app-contest .sg-header-secondary {
     font-size: 1.5rem;
     line-height: 1.5rem;
     margin-bottom: 24px; }
@@ -74,5 +74,5 @@ body {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex; }
-  .result__user .mint-avatar {
+  .result__user .sg-avatar {
     margin-right: 4px; }

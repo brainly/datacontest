@@ -55,24 +55,24 @@ var Answer = function Answer(props) {
         { className: className },
         _react2.default.createElement(
             'div',
-            { className: 'mint-label mint-label--large mint-label--emphasised mint-label--secondary' },
+            { className: 'sg-label sg-label--large sg-label--emphasised sg-label--secondary' },
             _react2.default.createElement(
                 'div',
-                { className: 'mint-label__icon' },
+                { className: 'sg-label__icon' },
                 _react2.default.createElement(
                     'div',
-                    { className: 'mint-radio' },
+                    { className: 'sg-radio' },
                     _react2.default.createElement('input', { id: inputId,
-                        className: 'mint-radio__element',
+                        className: 'sg-radio__element',
                         name: 'answer',
                         type: 'radio',
                         onChange: handleChange }),
-                    _react2.default.createElement('label', { className: 'mint-radio__ghost', htmlFor: inputId })
+                    _react2.default.createElement('label', { className: 'sg-radio__ghost', htmlFor: inputId })
                 )
             ),
             _react2.default.createElement(
                 'label',
-                { className: 'mint-label__text', htmlFor: inputId },
+                { className: 'sg-label__text', htmlFor: inputId },
                 props.answer.text,
                 ' ',
                 votes
@@ -115,18 +115,18 @@ var LogIn = function LogIn(props) {
             { className: "app-contest__header" },
             _react2.default.createElement(
                 "h1",
-                { className: "mint-text-bit" },
+                { className: "sg-text-bit" },
                 _react2.default.createElement(
                     "span",
-                    { className: "mint-text-bit__hole" },
-                    _react2.default.createElement("div", { className: "mint-logo mint-logo--small" })
+                    { className: "sg-text-bit__hole" },
+                    _react2.default.createElement("div", { className: "sg-logo sg-logo--small" })
                 ),
                 "Data Contest"
             )
         ),
         _react2.default.createElement(
             "p",
-            { className: "mint-text" },
+            { className: "sg-text" },
             "Do you like contests? Do you enjoy getting prizes? This thing might be for you."
         ),
         _react2.default.createElement(
@@ -134,11 +134,11 @@ var LogIn = function LogIn(props) {
             { className: "app-contest__action js-log-in" },
             _react2.default.createElement(
                 "a",
-                { className: "mint-button-primary mint-button-primary--full",
+                { className: "sg-button-primary sg-button-primary--full",
                     onClick: props.handleClick },
                 _react2.default.createElement(
                     "div",
-                    { className: "mint-button-primary__hole" },
+                    { className: "sg-button-primary__hole" },
                     "Join the fun!"
                 )
             )
@@ -187,7 +187,7 @@ var Question = function Question(props) {
             { className: 'app-contest__question' },
             _react2.default.createElement(
                 'h1',
-                { className: 'mint-header-secondary' },
+                { className: 'sg-header-secondary' },
                 question.id + 1,
                 '. ',
                 props.question.text
@@ -199,7 +199,7 @@ var Question = function Question(props) {
             ),
             _react2.default.createElement(
                 'p',
-                { className: 'mint-text mint-text--light' },
+                { className: 'sg-text sg-text--light' },
                 voters
             )
         )
@@ -275,7 +275,7 @@ var Results = function Results(props) {
             { className: 'result', key: index },
             _react2.default.createElement(
                 'td',
-                { className: 'mint-text' },
+                { className: 'sg-text' },
                 index + 1,
                 '.'
             ),
@@ -339,7 +339,7 @@ var Results = function Results(props) {
             { className: 'app-contest__header' },
             _react2.default.createElement(
                 'h1',
-                { className: 'mint-text-bit mint-text-bit--not-responsive mint-text-bit--xlarge' },
+                { className: 'sg-text-bit sg-text-bit--not-responsive sg-text-bit--xlarge' },
                 'Thank you for voting!'
             )
         ),
@@ -670,7 +670,7 @@ var Solution = function Solution(props) {
             { className: 'app-contest__question' },
             _react2.default.createElement(
                 'h1',
-                { className: 'mint-header-secondary' },
+                { className: 'sg-header-secondary' },
                 question.id + 1,
                 '. ',
                 props.question.text
@@ -701,8 +701,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var UserAvatar = function UserAvatar(props) {
     return _react2.default.createElement(
         "div",
-        { className: "mint-avatar mint-avatar--small" },
-        _react2.default.createElement("img", { className: "mint-avatar__image js-avatar-image",
+        { className: "sg-avatar sg-avatar--small" },
+        _react2.default.createElement("img", { className: "sg-avatar__image js-avatar-image",
             src: props.user.avatar,
             alt: props.user.name })
     );
@@ -776,7 +776,7 @@ var Welcome = function Welcome(props) {
             { className: 'app-contest__header' },
             _react2.default.createElement(
                 'h1',
-                { className: 'mint-header-primary' },
+                { className: 'sg-header-primary' },
                 'You made it!'
             )
         ),
@@ -785,8 +785,8 @@ var Welcome = function Welcome(props) {
             { className: 'app-contest__content' },
             _react2.default.createElement(
                 'div',
-                { className: 'mint-avatar mint-avatar--xxlarge' },
-                _react2.default.createElement('img', { className: 'mint-avatar__image', src: props.user.avatar })
+                { className: 'sg-avatar sg-avatar--xxlarge' },
+                _react2.default.createElement('img', { className: 'sg-avatar__image', src: props.user.avatar })
             )
         ),
         _react2.default.createElement(
@@ -794,7 +794,7 @@ var Welcome = function Welcome(props) {
             null,
             _react2.default.createElement(
                 'p',
-                { className: 'mint-text' },
+                { className: 'sg-text' },
                 'Who else is in?'
             ),
             _react2.default.createElement(_users2.default, { users: filterMe(props.users) }),
