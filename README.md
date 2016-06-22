@@ -1,4 +1,4 @@
-![Brainly Data Contest App](http://i.imgur.com/nTx6vlg.png)
+![Brainly Data Contest App](http://i.imgur.com/ACi6a99.png)
 
 # Data Contest App
 
