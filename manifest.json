@@ -1,0 +1,20 @@
+{
+  "name": "Brainly Data Contest",
+  "short_name": "DataContest",
+  "display": "standalone",
+  "theme_color": "#7edbb0",
+  "background_color": "#7edbb0",
+  "start_url": "index.html?homescreen=1",
+  "icons": [
+    {
+      "src": "img/logo-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "img/logo-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

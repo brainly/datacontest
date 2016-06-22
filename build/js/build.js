@@ -16,13 +16,6 @@ var _slideList2 = _interopRequireDefault(_slideList);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function start() {
-    var isDev = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-
-    // force HTTPS
-    if (!isDev && location.protocol !== 'https:') {
-        location.protocol = 'https:';
-    }
-
     _reactDom2.default.render(_react2.default.createElement(_slideList2.default, null), document.getElementById('app'));
 }
 
