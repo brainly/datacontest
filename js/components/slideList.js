@@ -23,7 +23,17 @@ class SlideList extends React.Component{
             slideIndex: 0
         };
 
-        this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCxzcHxObM03zjybvC8hfZ4AU5umx0rptk",
+            authDomain: "datacontest.firebaseapp.com",
+            databaseURL: "https://datacontest.firebaseio.com",
+            storageBucket: "project-465582725197367567.appspot.com"
+        };
+        firebase.initializeApp(config);
+
+        this.db = firebase.database().ref();
+        this.auth = firebase.auth();
     }
 
     componentWillMount() {
@@ -31,7 +41,7 @@ class SlideList extends React.Component{
     }
 
     initSlideController() {
-        this.sc = new SlideController(this.firebaseRef);
+        this.sc = new SlideController(this.db);
 
         this.sc.onSlideChange(this.goToSlide.bind(this));
 
@@ -84,7 +94,7 @@ class SlideList extends React.Component{
     }
 
     initQuestionRepository() {
-        this.questionRepo = new QuestionRepository(this.firebaseRef);
+        this.questionRepo = new QuestionRepository(this.db);
 
         this.questionRepo.onReady((questions) => {
             this.questions = this.getQuestionList(questions);
@@ -100,7 +110,7 @@ class SlideList extends React.Component{
     }
 
     initUser() {
-        this.user = new User(this.firebaseRef);
+        this.user = new User(this.db, this.auth);
 
         this.user.onAuth(() => {
             if(this.user.isAuthenticated()) {
@@ -122,7 +132,7 @@ class SlideList extends React.Component{
     }
 
     initUsers() {
-        this.usersRepo = new UsersRepository(this.firebaseRef);
+        this.usersRepo = new UsersRepository(this.db);
         this.usersRepo.onUserAdded(() => {
             this.setState({ users: this.usersRepo.users });
         });
@@ -130,7 +140,7 @@ class SlideList extends React.Component{
     }
 
     initVotes() {
-        this.votesRepo = new VotesRepository(this.firebaseRef);
+        this.votesRepo = new VotesRepository(this.db);
 
         if(this.user.isAdmin()) {
             this.votesRepo.onVotesChange(() => {

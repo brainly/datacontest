@@ -1,20 +1,20 @@
 class UsersRepository {
-    constructor(firebase) {
-        this.firebase = firebase;
+    constructor(db) {
+        this.db = db;
         this._listeners = {
             'user-added': [],
             'error': []
         };
         this.users = [];
 
-        (this.firebase).child('users/').on('child_added', data => {
-            let user = this._addUser(data.key(), data.val());
+        (this.db).child('users/').on('child_added', data => {
+            let user = this._addUser(data.key, data.val());
             this._trigger('user-added', user);
         });
     }
 
     register(user) {
-        let votesRef = (this.firebase).child(`users/${user.id}`);
+        let votesRef = (this.db).child(`users/${user.id}`);
         votesRef.set({
             name: user.name,
             avatar: user.avatar
