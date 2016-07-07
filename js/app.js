@@ -1,3 +1,4 @@
+import './exception-tracking.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SlideList from './components/slideList.js';
