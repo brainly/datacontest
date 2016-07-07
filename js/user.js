@@ -8,6 +8,15 @@ class User {
         (this.firebase).onAuth((authData) => {
             this._initUser(authData).then(() => {
                 this._trigger('auth');
+
+                if(authData) {
+                    ga('set', 'userId', this.id);
+                    ga('send', {
+                        hitType: 'event',
+                        eventCategory: 'App',
+                        eventAction: 'log in'
+                    });
+                }
             });
         });
     }
