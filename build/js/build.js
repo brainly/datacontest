@@ -997,6 +997,15 @@ var User = function () {
         this.firebase.onAuth(function (authData) {
             _this._initUser(authData).then(function () {
                 _this._trigger('auth');
+
+                if (authData) {
+                    ga('set', 'userId', _this.id);
+                    ga('send', {
+                        hitType: 'event',
+                        eventCategory: 'App',
+                        eventAction: 'log in'
+                    });
+                }
             });
         });
     }
@@ -1205,6 +1214,13 @@ var VotesRepository = function () {
                     //TODO add error handling
                     alert('We are unable to process your vote :( ' + error);
                 }
+            });
+
+            ga('send', {
+                hitType: 'event',
+                eventCategory: 'Question',
+                eventAction: 'vote',
+                eventLabel: questionId
             });
         }
     }, {

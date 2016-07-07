@@ -21,6 +21,13 @@ class VotesRepository {
                 alert('We are unable to process your vote :( ' + error);
             }
         });
+
+        ga('send', {
+            hitType: 'event',
+            eventCategory: 'Question',
+            eventAction: 'vote',
+            eventLabel: questionId
+        });
     }
 
     getVotersForAnswer(questionId, answerId) {
