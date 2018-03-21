@@ -16,7 +16,7 @@
     "url": "https://github.com/brainly/datacontest/issues"
   },
   "homepage": "https://github.com/brainly/datacontest#readme",
-  "dependencies" : {
+  "dependencies": {
     "react": "^0.14.7",
     "react-dom": "^0.14.7"
   },
