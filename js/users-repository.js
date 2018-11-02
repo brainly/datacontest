@@ -7,8 +7,8 @@ class UsersRepository {
         };
         this.users = [];
 
-        (this.firebase).child('users/').on('child_added', data => {
-            let user = this._addUser(data.key(), data.val());
+        (this.firebase).child('users').on('child_added', data => {
+            let user = this._addUser(data.key, data.val());
             this._trigger('user-added', user);
         });
     }
