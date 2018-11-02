@@ -1056,8 +1056,6 @@ var User = function () {
                 return Promise.reject();
             }
 
-            console.log('data', data);
-
             var providerData = data.providerData[0];
 
             this.id = data.uid;
