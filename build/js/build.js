@@ -1013,7 +1013,9 @@ var User = function () {
         var auth = this.firebase.auth();
 
         auth.onAuthStateChanged(function (user) {
-            return _this._initUser(user).then(_this._checkIfAdmin).then(_this._onUserReady);
+            return _this._initUser(user).then(_this._checkIfAdmin).then(_this._onUserReady).catch(function (e) {
+                return console.log(e);
+            });
         });
     }
 
@@ -1051,17 +1053,19 @@ var User = function () {
         key: '_initUser',
         value: function _initUser(data) {
             if (!data) {
-                return;
+                return Promise.reject();
             }
 
-            var userData = data.providerData[0];
+            console.log('data', data);
 
-            this.id = userData.uid;
-            this.name = userData.displayName;
-            this.avatar = userData.photoURL;
-            this.email = userData.email;
+            var providerData = data.providerData[0];
 
-            if (userData) {
+            this.id = data.uid;
+            this.name = providerData.displayName;
+            this.avatar = providerData.photoURL;
+            this.email = providerData.email;
+
+            if (providerData) {
                 ga('set', 'userId', this.id);
                 ga('send', {
                     hitType: 'event',
@@ -1075,7 +1079,6 @@ var User = function () {
     }, {
         key: '_onUserReady',
         value: function _onUserReady() {
-            console.log('_onUserReady');
             this._trigger('auth');
         }
     }, {
@@ -1083,7 +1086,6 @@ var User = function () {
         value: function _checkIfAdmin() {
             var _this2 = this;
 
-            console.log('_checkIfAdmin');
             return new Promise(function (resolve, reject) {
                 _this2.firebase.database().ref('admin-access').once('value', function () {
                     _this2.admin = true;

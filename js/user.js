@@ -15,6 +15,7 @@ class User {
             this._initUser(user)
                 .then(this._checkIfAdmin)
                 .then(this._onUserReady)
+                .catch(e => console.log(e))
         );
     }
 
@@ -45,17 +46,17 @@ class User {
 
     _initUser(data) {
         if (!data) {
-            return;
+            return Promise.reject();
         }
 
-        const userData = data.providerData[0];
+        const providerData = data.providerData[0];
 
-        this.id = userData.uid;
-        this.name = userData.displayName;
-        this.avatar = userData.photoURL;
-        this.email = userData.email;
+        this.id = data.uid;
+        this.name = providerData.displayName;
+        this.avatar = providerData.photoURL;
+        this.email = providerData.email;
 
-        if(userData) {
+        if(providerData) {
             ga('set', 'userId', this.id);
             ga('send', {
                 hitType: 'event',
@@ -68,12 +69,10 @@ class User {
     }
 
     _onUserReady() {
-        console.log('_onUserReady');
         this._trigger('auth');
     }
 
     _checkIfAdmin() {
-        console.log('_checkIfAdmin');
         return new Promise((resolve, reject) => {
             this.firebase.database().ref('admin-access').once('value', () => {
                 this.admin = true;
