@@ -5,20 +5,18 @@ class User {
             'auth': []
         };
 
-        (this.firebase).onAuth((authData) => {
-            this._initUser(authData).then(() => {
-                this._trigger('auth');
+        this._initUser = this._initUser.bind(this);
+        this._checkIfAdmin = this._checkIfAdmin.bind(this);
+        this._onUserReady = this._onUserReady.bind(this);
 
-                if(authData) {
-                    ga('set', 'userId', this.id);
-                    ga('send', {
-                        hitType: 'event',
-                        eventCategory: 'App',
-                        eventAction: 'log in'
-                    });
-                }
-            });
-        });
+        const auth = this.firebase.auth();
+
+        auth.onAuthStateChanged(user => 
+            this._initUser(user)
+                .then(this._checkIfAdmin)
+                .then(this._onUserReady)
+                .catch(e => console.log(e))
+        );
     }
 
     isAdmin() {
@@ -30,16 +28,10 @@ class User {
     }
 
     authenticate() {
-        (this.firebase).authWithOAuthRedirect('google', (error, authData) => {
-            if (error) {
-                this._trigger('error', error);
-            } else {
-                //this will never happen since on success user is redirected to the oauth page
-            }
-        }, {
-            remember: 'sessionOnly',
-            scope: 'email'
-        });
+        const auth = this.firebase.auth();
+        const provider = new firebase.auth.GoogleAuthProvider();
+
+        auth.signInWithPopup(provider);
     }
 
     onAuth(listener) {
@@ -52,21 +44,37 @@ class User {
         });
     }
 
-    _initUser(authData) {
-        //TODO add '@brainly.com' check
+    _initUser(data) {
+        if (!data) {
+            return Promise.reject();
+        }
 
-        this.id = authData ? authData.uid : null;
-        this.name = authData ? authData.google.displayName : null;
-        this.avatar = authData ? authData.google.profileImageURL : null;
-        this.email = authData ? authData.google.email : null;
+        const providerData = data.providerData[0];
 
-        return this._checkIfAdmin();
+        this.id = data.uid;
+        this.name = providerData.displayName;
+        this.avatar = providerData.photoURL;
+        this.email = providerData.email;
+
+        if(providerData) {
+            ga('set', 'userId', this.id);
+            ga('send', {
+                hitType: 'event',
+                eventCategory: 'App',
+                eventAction: 'log in'
+            });
+        }
+
+        return Promise.resolve();
+    }
+
+    _onUserReady() {
+        this._trigger('auth');
     }
 
     _checkIfAdmin() {
-        //we are trying to determine if user has admin rights by accessing admin-only data
         return new Promise((resolve, reject) => {
-            (this.firebase).child('admin-access').once('value', () => {
+            this.firebase.database().ref('admin-access').once('value', () => {
                 this.admin = true;
                 resolve();
             }, (err) => {

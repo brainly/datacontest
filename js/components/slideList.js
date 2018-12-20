@@ -16,6 +16,8 @@ class SlideList extends React.Component{
     constructor() {
         super();
 
+        this.firebase = window.firebase;
+
         this.state =  {
             questions : [],
             users: [],
@@ -23,7 +25,17 @@ class SlideList extends React.Component{
             slideIndex: 0
         };
 
-        this.firebaseRef = new Firebase("https://datacontest.firebaseio.com");
+        var config = {
+            apiKey: "AIzaSyCxzcHxObM03zjybvC8hfZ4AU5umx0rptk",
+            authDomain: "datacontest.firebaseapp.com",
+            databaseURL: "https://datacontest.firebaseio.com",
+            projectId: "project-465582725197367567",
+            storageBucket: "project-465582725197367567.appspot.com",
+            messagingSenderId: "510280060293"
+        };
+
+        this.firebase.initializeApp(config);
+        this.firebaseRef = this.firebase.database().ref();
     }
 
     componentWillMount() {
@@ -100,7 +112,7 @@ class SlideList extends React.Component{
     }
 
     initUser() {
-        this.user = new User(this.firebaseRef);
+        this.user = new User(this.firebase);
 
         this.user.onAuth(() => {
             if(this.user.isAuthenticated()) {
